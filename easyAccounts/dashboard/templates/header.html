@@ -1,0 +1,44 @@
+<!-- Header Div -->
+
+<header>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-1 col-sm-1 dark_blue_bg">
+				<a href="{% url 'dashboard' %}" class="fa fa-home home_icon"></a>
+			</div>
+			<div class="col-md-11 col-sm-11 header_margin">
+				<div class="col-md-5 col-sm-5 ">
+					<div class="logo">
+						<span> EasyAccounts </span>
+						<p> Powered by Photizo Infotech </p>
+					</div>
+				</div>
+				<div class="col-md-7 col-sm-7">
+					<div class="col-md-12 col-sm-12 no-padding">	
+						<ul class="header_menus">
+							<li>
+								<a href="{% url 'logout' %}" class="logout fa fa-unlock-alt"></a>
+							</li>
+							<li>
+								<a href="" class="settings fa fa-gear"></a>
+								<ul class="drop_down">
+									<li><a href="{% url 'staffs' %}">Staffs</a></li>
+									<li><a href="{% url 'salesmen_list' %}">Salesman</a></li>
+									<li><a href="{% url 'bonus_points' %}">Bonus Points</a></li>
+									<li><a href="{% url 'reset_password' %}">Reset Password</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="" class="user fa fa-user"></a>
+							</li>
+						</ul>				
+						<span class="date">
+							{{date|date:"D d M  Y"}}
+						</span>
+					</div>
+					{% include 'stock_search.html' %}
+				</div>
+			</div>
+		</div>
+	</div>
+</header>

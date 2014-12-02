@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Account Payable{% endblock title%}
+{% block body_id %}account_payable{% endblock %}
+{% block controller %} ng-controller="AsscountsPayableController" ng-init="init('{{ csrf_token }}')" 
+{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'suppliers' %}" class="no-border"> Supplier List </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'accounts_payable' %}"> A/c Payable </a></li>
+		<li> <a href="{% url 'add_supplier' %}"> New Supplier </a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+	<h2> Account Payable</h2>
+	<table ng-show="supplier_details.length > 0" class="table table-striped">
+		<tr>
+			<th>Account Name</th>
+			<th>Invoice</th>
+			<th>Type/Particulars</th>
+			<th>Payment Terms</th>
+			<th>Total Amount</th>
+		</tr>
+		<tr ng-repeat="supplier in visible_list">
+			<td>[[supplier.account_name]]</td>
+			<td>[[supplier.invoice]]</td>
+			<td>[[supplier.particulars]]</td>
+			<td>[[supplier.payment_terms]]</td>
+			<td>[[supplier.amount]]</td>
+		</tr>
+	</table>
+	<div>
+		<div>
+			<input type="submit" value="Generate PDF" ng-click="generate_report()">
+		</div>
+	</div>
+	<div ng-show="supplier_details.length > 0 ">
+		{% include 'pagination_div.html' %}
+	</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Serial No Settings {% endblock title%}
+{% block body_id %}serialno_settings{% endblock %}
+{% block controller %} ng-controller="SerialNoController" ng-init="init('{{ csrf_token }}')" 
+{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li class="horizontal_menu_active"> <a href="{% url 'view_serial_no_settings' %}"> Serial No Settings </a></li>
+		
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+<h2>Set Your own Serial No</h2>
+<div  >
+	<form>
+		<!-- <div class="control">
+			<label>Auto Generated Serial No</label>
+			<input type="radio" ng-model="serial_no.settings_type" value="Auto Generated No"ng-click="set_settings('Auto Generated No')"/>
+		</div>
+		<div class="control">
+			<label>Set Your own Serial No</label>
+			<input type="radio" ng-model="serial_no.settings_type" value="Set Serial No" ng-click="set_settings('Set Serial No')"/>
+		</div> -->
+		
+		<div >
+			<div class="control">
+				<label>Invoice</label>
+				<input type="radio" ng-model="serial_no.serial_no_type" value="Invoice"/>
+			</div>
+			<div class="control">
+				<label>Bill</label>
+				<input type="radio" ng-model="serial_no.serial_no_type" value="Bill" />
+			</div>
+			<div>
+				<div class="control">
+					<label>Prefix</label>
+					<input type="text" ng-model="serial_no.prefix">
+				</div>
+				<div class="control">
+					<label>Starting No</label>
+					<input type="text" ng-model="serial_no.starting_no">
+				</div>
+			</div>
+			[[error_msg]]
+		</div>
+		<input type="submit" value="Save" ng-click="save_settings()">
+	</form>	
+</div>
+{% endblock content %}

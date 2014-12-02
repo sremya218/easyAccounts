@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Permissions{% endblock title%}
+{% block body_id %}permissions{% endblock body_id%}
+{% block controller %}ng-controller="PermissionController" ng-init="init('{{csrf_token}}')" {% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li class=""> <a href="{% url 'staffs' %}"> Staff List </a></li>
+		<li class=""> <a href="{% url 'add_staff' %}" class="no-border">New Staff </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'permissions' %}">Staff Permissions </a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+	<div class="row margin-top">
+		<h2>Permissions</h2>
+		<div class="col-md-8 col-sm-8">
+			<div class="control">
+				<label>Staff</label>
+				<div class="col-md-8 col-sm-6">
+				<input type="text" ng-model="staff_name" ng-change="search_staff()" ng-click="select_staff_flag=true">
+			    </div>
+				<div class="search_list_container">
+					<div ng-show="select_staff_flag" class="search_list" ng-show="staffs.length > 0">
+						<!-- <div ng-click="select_staff_flag=false" class="search_list_item">
+							<span><a href="" ng-click="new_staff()">New</a></span>
+						</div> -->
+						<div ng-repeat="staff in staffs" ng-class="{'highlight': $index == focusIndex}" ng-click="get_staff_details(staff)" class="search_list_item">
+							<span>[[staff.name]]</span>
+						</div>
+					</div>
+				</div>
+				<p class="error_msg">[[no_staff_message]]</p>
+			</div>
+			<div class="control">
+				<input type="checkbox" ng-model="permission.accounts_permission">
+				<label>Accounts Permission</label>
+			</div>
+			<div class="control">
+				<input type="checkbox" ng-model="permission.inventory_permission">
+				<label>Inventory Permission</label>
+			</div>
+			<div class="control">
+				<input type="checkbox" ng-model="permission.sales_permission">
+				<label>Sales Permission</label>
+			</div>
+			<div class="control">
+				<input type="checkbox" ng-model="permission.purchase_permission">
+				<label>Purchase Permission</label>
+			</div>
+			<div class="control">
+				<input type="checkbox" ng-model="permission.suppliers">
+				<label>Suppliers Permission</label>
+			</div>
+			<div class="control">
+				<input type="checkbox" ng-model="permission.customers">
+				<label>Customers Permission</label>
+			</div>
+			<div class="control">
+				<input type="checkbox" ng-model="permission.reports">
+				<label>Customers Reports</label>
+			</div>
+			<div class="button_control">
+				<p class="error_msg">[[validate_staff_permission]]</p>
+				<input type="button" value="Set Permission" ng-click="save_permissions()" class="create_button">
+			</div>
+		</div>
+	</div>
+{% endblock %}

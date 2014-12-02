@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block body_id %}accounts{% endblock %}
+{% block title %} Receipts {% endblock title%}
+{% block controller %} ng-controller="ReceiptController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'chart_of_accounts' %}"> Chart Of Accounts </a></li>
+		<li><a href="{% url 'other_transactions' %}">Other Transactions</a></li>
+		<li><a href="{% url 'payments' %}">Payments</a></li>
+		<li><a href="{% url 'opening_balance' %}">Opening Balance</a></li>
+		<li><a href="{% url 'edit_transactions' %}" class="no-border">Edit Transactions</a></li>
+		<li class="horizontal_menu_active"><a href="{% url 'receipts' %}">Receipts</a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}    
+{% block dialogue_popup %}   
+    {% include 'show_transaction_details.html' %} 
+    {% include 'bank_account_details.html' %}   
+{% endblock %}
+{% block extrahead %}
+     <script>
+        $(function() {
+        $( "#receipt_date" ).datepicker();
+        $( "#cheque_date" ).datepicker();
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <h2> Receipts </h2>
+    <div class="receipts_entry row">
+        <form name="receipts_form"> 
+            <div class="col-md-6 col-sm-6">
+                <div class="control"> 
+                   <label>Date</label>
+                    <input type="text" name="receipt_date" id="receipt_date" ng-model="receipt.transaction_date" />
+                </div>
+                <div class="control">
+                    <label>Amount</label>
+                    <input type="text" name="receipt_amount" ng-model="receipt.amount" />
+                </div>
+                <div class="control">
+                    <label>Payment Mode</label>
+                    <input type="radio" ng-model="receipt.mode" value="cash"/>
+                    <label class="label_radio">Cash</label>
+                    <input type="radio" ng-model="receipt.mode" value="card"/>
+                    <label class="label_radio">Card</label>
+                    <input type="radio" ng-model="receipt.mode" value="cheque"/>
+                    <label class="label_radio">Cheque</label>
+                </div>
+                <div class="control" ng-show="receipt.mode == 'card' || receipt.mode == 'cheque'">
+                    <label>Bank Account</label>
+                    <select ng-model="receipt.bank_account" ng-options="bank_account.id as bank_account.name for bank_account in bank_accounts"></select>
+                    <a href="" ng-click="create_new_bank_ledger()">New Bank Account</a>
+                </div>
+                 <div class="control" ng-show="receipt.mode == 'card' || receipt.mode == 'cheque'">
+                        <label>Bank Name</label>
+                        <input type="text" name="bank_name" ng-model="receipt.bank_name" id="bank_name"/>
+                    </div>
+                <div ng-show="receipt.mode == 'card'">
+                    <div class="control">
+                        <label>Card Number</label>
+                        <input type="text" name="card_no" ng-model="receipt.card_no"/>
+                    </div>
+                    <div class="control">
+                        <label>Card Holder Name</label>
+                        <input type="text" name="card_holder_name" ng-model="receipt.card_holder_name"/>
+                    </div>
+                </div>
+                <div ng-show="receipt.mode == 'cheque'">
+                    <div class="control">
+                        <label>Cheque Number</label>
+                        <input type="text" name="cheque_number" ng-model="receipt.cheque_number"/>
+                    </div>
+                    <div class="control">
+                        <label>Cheque Date</label>
+                        <input type="text" name="cheque_date" ng-model="receipt.cheque_date" id="cheque_date"/>
+                    </div>
+                    
+                    <div class="control">
+                        <label>Branch</label>
+                        <input type="text" name="branch" ng-model="receipt.branch" id="branch"/>
+                    </div>
+                </div>
+                <div class="control">
+                    <label>Narration</label>
+                    <textarea name="receipt_narration" ng-model="receipt.narration"></textarea>
+                </div>
+                <div class="control">
+                    <label>Account</label>
+                    <input type="text" name="ledger_name" ng-model="ledger_name" ng-change="get_ledger_list()" ng-disabled="ledger.id" autocomplete="off" />
+                    <div ng-show="ledgers_list.length > 0" class="search_list">
+                        <div ng-repeat="ledger in ledgers_list" class="search_list_item" ng-click="get_ledger_details(ledger)" ng-class="{'highlight': $index == focusIndex}">
+                            <span>[[ledger.name]] - [[ledger.parent_name]]</span>
+                        </div>
+                    </div>
+                </div>              
+                <div class="button_control">
+                    <p class="error_msg">[[no_ledger_msg]]</p>
+                    <p class="error_msg">[[validate_error_msg]]</p>
+                    <!-- <input type="button" value="Cancel" class="create_button" ng-click="cancel_payment()" /> -->
+                    <input type="button" value="Save" class="create_button" ng-click="save_receipt()" />
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

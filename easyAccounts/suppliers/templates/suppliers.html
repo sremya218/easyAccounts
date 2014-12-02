@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Suppliers{% endblock title%}
+{% block body_id %}suppliers{% endblock %}
+{% block controller %} ng-controller="SupplierController" ng-init="init('{{ csrf_token }}')" 
+{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li class="horizontal_menu_active"> <a href="{% url 'suppliers' %}"> Supplier List </a></li>
+		<li> <a href="{% url 'accounts_payable' %}"> A/c Payable </a></li>
+		<li> <a href="{% url 'add_supplier' %}"> New Supplier </a></li>
+	</ul>
+{% endblock %}
+{% block dialogue_popup %}
+	{% include 'view_suppliers.html' %}                        
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+	<div class="col-md-12 col-sm-12 margin-top">
+		<button class="create_button" ng-click="create_new_supplier()">Create New Supplier</button>
+	</div>
+	<div class="content_search col-md-8 col-sm-8">
+		<label>Search Supplier</label>
+		<input type="text" ng-model="supplier_name" ng-change="search_supplier()">
+		<p class="error_msg">[[no_supplier_msg]]</p>
+	</div>
+	<table class="table table-striped">
+		<tr ng-show="suppliers.length > 0">
+			<th>#</th>
+			<th>Name</th>
+			<th>View</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+		<tr ng-repeat="supplier in visible_list">
+			<td>[[($index)+((current_page-1)*page_interval)+1]]</td>
+			<td>[[supplier.name]]</td>
+			<td><a href="" ng-click="view_supplier(supplier)">View </a></td>
+			<td><a href="{% url 'edit_supplier' %}?supplier_id=[[supplier.id]]">Edit </a></td>
+			<td><a href="" ng-click="delete_supplier(supplier)">Delete</a></td>
+		</tr>
+	</table>
+	<div ng-show="suppliers.length > 0 ">
+		{% include 'pagination_div.html' %}
+	</div>	
+
+{% endblock %}

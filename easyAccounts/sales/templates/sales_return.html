@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block body_id %}sales{% endblock %}
+{% block title %} Sales Return {% endblock title%}
+{% block controller %} ng-controller="SalesReturnController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block dialogue_popup %}
+	{% include 'show_transaction_details.html' %} 
+	{% include 'payment_mode_details.html' %}
+	{% include 'bank_account_details.html' %}
+{% endblock %}
+{% block extrahead %}
+	<script>
+		$(function() {
+			$( "#invoice_date" ).datepicker();
+			$( "#cheque_date" ).datepicker();
+		});
+	</script>
+{% endblock %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'sales_entry' %}"> Sales Entry </a></li>
+		<li> <a href="{% url 'sales_view' %}" class="no-border"> View Sales </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'sales_return_entry' %}"> Sales Return </a></li>
+		<li> <a href="{% url 'sales_return_view' %}"> Sales Return View</a></li>
+		<li><a href="{% url 'estimate_entry' %}">Estimate</a></li>
+		<li><a href="{% url 'estimate_view' %}">Estimate View</a></li>
+		<li><a href="{% url 'deliverynote_entry' %}">Delivery Note</a></li>
+		<li><a href="{% url 'deliverynote_view' %}">DeliveryNote View</a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+	<h2> Sales Return </h2>
+	<div class="form_container wide_form">
+		<form name="sales_return_form">	
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Sales Invoice No</label>
+					<input type="text" ng-model="sales_invoice" ng-change="get_sales_details()" /> 
+					<p class="error_msg">[[no_sales_message]]</p>
+				</div>		
+				<div class="control">
+					<label>Return Invoice No</label>
+					<input type="text" ng-model="sales_return.return_invoice" />
+				</div>	
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Return Invoice Date</label>
+					<input type="text" id="invoice_date">
+				</div>	
+				<div class="control">
+					<label>Salesman</label>
+					<input type="text" ng-model="sales_return.salesman" readonly /> 
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Customer</label>
+					<input type="text" ng-model="sales_return.customer" readonly /> 
+				</div>
+			</div>
+			<div class="col-md-10 col-sm-10">
+			<div class="payment_mode">
+				<label>Payment Mode</label>
+				<div class="col-md-8 col-sm-4">
+				<div class="control">
+					<input type="radio" ng-model="sales_return.payment_mode" value="cash"><label>Cash</label>
+					<input type="radio" ng-model="sales_return.payment_mode" value="cheque" ng-click="bank_account_details('cheque')"><label>Cheque</label>
+					<input type="radio" ng-model="sales_return.payment_mode" value="card" ng-click="bank_account_details('card')" ><label>Card</label>
+				</div>
+				</div> 
+				</div>
+			</div>
+			<br/>
+			<hr ng-show="sales_return.items.length > 0">
+			<p class="error_msg">[[item_selected_msg]]</p>
+			<table class="table list_table table-striped rules" >
+			<tr>
+				<th>#</th>
+				<th> Item Name </th>
+				<th> Code </th>
+				<th> Sold Quantity </th>
+				<th> UOM </th>
+				<th> Returned Quantity </th>
+				<th> Quantity </th>
+				<th ng-show="sales_return.bill_type == 'Invoice'"> Tax </th>
+				<th> Net Amount </th>
+				<th> Balance </th>
+			</tr>
+			<tr ng-repeat="item in sales_return.items" ng-show="sales_return.items.length > 0">
+				<td>[[$index+1]]</td>
+				<td>[[item.name]]</td>
+				<td>[[item.code]]</td>
+				<td>[[item.purchased_quantity]]</td>
+				<td>[[item.uom]]</td>
+				<td>[[item.return_history]]</td>
+				<td><input type="text" ng-model="item.returned_qty" ng-change="calculate_balance(item)" ng-show="item.type != 'Services'"><span ng-show="item.type == 'Services'">[[item.returned_qty]]</span> </td>
+				<td ng-show="sales_return.bill_type == 'Invoice'">[[item.tax_on_sales]]<span ng-show="item.tax_on_sales > 0">%</span></td>
+				<td>[[item.net_amount]]</td>
+				<td>[[item.balance]]</td>
+			</table>
+			<hr>	
+			<div class="col-md-7 col-sm-7">
+			<div class=" control">
+				<label>Discount</label>
+				<input type="text" ng-model="sales_return.discount" ng-change="calculate_total_amount()" readonly>
+			</div>
+			<div class="control">
+				<label>Grant Total</label>
+				<input type="text" ng-model="sales_return.grant_total" readonly>
+			</div>
+			<div class="control">
+				<label>Return Amount</label>
+				<input type="text" ng-model="sales_return.return_balance" ng-blur="sales_return.return_balance = Math.round(sales_return.return_balance)" readonly>
+			</div>
+			<div class="button_control">
+				<p class="error_msg">[[validate_sales_return_msg]]</p>
+				<input class="" type="submit" value="Save" ng-click="save_sales_return()">
+			</div>
+		</div>
+		</form>
+	</div>
+{% endblock %}

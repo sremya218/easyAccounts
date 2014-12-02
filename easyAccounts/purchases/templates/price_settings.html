@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block body_id %}purchase{% endblock %}
+{% block title %} {% if product_id %} Edit Product {% else %} Price Settings {% endif %}  {% endblock title%}
+{% block controller %} ng-controller="PriceSettingController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'purchase_entry' %}"> Purchase Entry </a></li>
+		<li> <a href="{% url 'purchase_view' %}"> View Purchase </a></li>
+		<li> <a href="{% url 'purchase_return' %}"> Purchase Return </a></li>
+		<li> <a href="{% url 'purchase_return_view' %}" class="no-border"> Purchase Return View</a></li>
+		<li class="horizontal_menu_active"><a href="{% url 'price_settings' %}">Price Settings</a></li>
+	</ul>
+{% endblock %}
+{% block dialogue_popup %}
+	{% include 'cost_price_calculator.html' %} 
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+	<h2>Price Settings</h2>
+	<div>
+		<form name="price_settings_form">
+			<div class="control">
+				
+				<input type="radio" name="price_setting_type" ng-model="price_setting_type" ng-click="change_price_setting_type('batch_item')" value="batch_item">
+				<label>Batch Item</label>
+				<input type="radio" name="price_setting_type" ng-model="price_setting_type" ng-click="change_price_setting_type('purchase')" value="purchase">
+				<label>Purchase Invoice</label>
+			</div>	
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Select Batch</label>
+					<input type="text" ng-model="batch_name" name="batch_name" ng-change="get_batch_details()" ng-readonly="is_batch_items" />
+					<div class="search_list" ng-show="batches.length > 0">
+						<div class="search_list_item" ng-repeat="batch in batches" ng-click="select_batch(batch)" ng-class="{'highlight': $index == focusIndex}">
+							<span>[[batch.name]]</span>
+						</div>
+					</div>
+					<p class="error_msg">[[no_batch_msg]]</p>
+				</div>
+				<div class="control">
+					<label>Select Item</label>
+					<input type="text" ng-model="items_name" name="item_name" ng-change="get_batch_item_list()" ng-readonly="is_batch_items" /><br/>
+					
+					<div class="search_list" ng-show="items.length > 0">
+						<div class="search_list_item" ng-repeat="item in items" ng-click="select_batch_item(item)" ng-class="{'highlight': $index == focusIndex}" ng-show="item.batch_name">
+							<span>[[item.name]]</span>
+						</div>
+					</div>
+					<p class="error_msg">[[no_batch_item_msg]]</p>
+					<p class="error_msg">[[no_item_msg]]</p>
+				</div>
+				<div class="control">
+					<label>Purchase Invoice</label>
+					<input type="text" ng-model="purchase_invoice" name="purchase_invoice" ng-change="get_purchase_invoice_details()" ng-readonly="is_purchase_invoice" /><br/>
+					<p class="error_msg">[[no_purchase_invoice_msg]]</p>
+				</div>
+        	</div>
+        	<div class="col-md-12 col-sm-12">
+				<table ng-show="batch_items.length > 0" class="table list_table table-striped rules">
+					<tr>
+						<th>Item</th>
+						<th>Batch</th>
+						<th>UOM</th>
+						<th>Unit Price</th>
+						<th>Cost Price</th>
+						<th>Wholesale Profit % </th>
+						<th>Retail Profit % </th>
+						<th>Wholesale Price </th>
+						<th>Retail Price </th>
+						<th>Branch Price </th>
+						<th>Customer Card Price</th>
+						<th>Permissible Discount </th>
+					</tr>
+					<tr ng-repeat="item in batch_items">
+
+						<td>[[item.item_name]]</td>
+						<td>[[item.batch_name]]</td>
+						<td>[[item.uom]]</td>
+						<td>
+							<span>[[item.purchase_price]]</span>
+						</td>
+						<td>
+							<span ng-show="item.is_cost_price_existing == 'true'">[[item.cost_price]]</span>
+							<input type="text" ng-model="item.cost_price"  ng-show="item.is_cost_price_existing == 'false' && !is_purchase_invoice" ng-click="calculate_cost_price(item)" />
+							<input type="text" ng-model="item.cost_price"  ng-show="item.is_cost_price_existing == 'false' && !is_batch_items" />
+						</td>
+						<td>
+							<span ng-show="item.is_wholesale_profit == 'true' ">[[item.wholesale_profit]]</span>
+							<input type="text" ng-model="item.wholesale_profit" ng-hide="item.is_wholesale_profit" ng-change="calculate_price_profit(item)"/>
+						</td>
+						<td>
+							<span ng-show="item.is_retail_profit == 'true' ">[[item.retail_profit]]</span>
+							<input type="text" ng-model="item.retail_profit" ng-hide="item.is_retail_profit" ng-change="calculate_price_profit(item)"/>
+						</td>
+						<td>[[item.wholesale_price]] </td>
+						<td>[[item.retail_price]]</td>
+						<td>
+							<span ng-show="item.is_branch_price == 'true' ">[[item.branch_price]]</span>
+							<input type="text" ng-model="item.branch_price" ng-hide="item.is_branch_price == 'true'"/>
+						</td>
+						<td>
+							<span ng-show="item.is_customer_card_price == 'true' ">[[item.customer_card_price]]</span>
+							<input type="text" ng-model="item.customer_card_price" ng-hide="item.is_customer_card_price == 'true'"/>
+						</td>
+						<td>
+							<span ng-show="item.is_permissible_discount == 'true' ">[[item.permissible_discount]]</span>
+							<input type="text" ng-model="item.permissible_discount" ng-hide="item.is_permissible_discount == 'true'"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="button_control">
+					<input class="create_button" type="button" value="Save" ng-click="save_price_settings()"/>
+					<p class="error_msg">[[validate_price_settings_error_msg]]</p>
+				</div>
+			</div>
+		</form>
+	</div>
+
+{% endblock %}

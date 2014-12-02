@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %} Received Report {% endblock title%}
+{% block body_id %}receivedreports{% endblock %}
+{% block controller %} ng-controller="ReceivedReportController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'purchase_report' %}"> Purchase </a></li>
+		<li> <a href="{% url 'purchase_return_report' %}" > Purchase Return </a></li>
+		<li> <a href="{% url 'sales_report' %}"> Sales </a></li>
+		<li> <a href="{% url 'sales_return_report' %}"> Sales Return </a></li>
+		<li><a href="{% url 'day_book' %}"> Accounts </a></li>
+		<li><a href="{% url 'vendor_stock_report' %}" class="no-border"> Suppliers </a></li>
+		<li class="horizontal_menu_active"><a href="{% url 'received_report' %}" > Customers </a></li>
+		<li><a href="{% url 'salesman_incentive_report' %}"> Salesman </a></li>
+		<li ><a href="{% url 'stock_report' %}"> Inventory </a></li>
+	</ul>
+{% endblock %}
+{% block sub_menu %}
+	<li class="horizontal_menu_active"> <a href="{% url 'received_report' %}"> Customers Received Report </a></li>
+	
+{% endblock sub_menu%}
+{% block content %}
+ <script>
+	$(function() {
+	$( "#start_date" ).datepicker();
+	$( "#end_date" ).datepicker();
+	});
+</script>
+<h2>Received Report </h2>
+<div class="col-md-12 col-sm-12">
+	<div class="report_form row">
+		<div class="col-md-4 col-sm-4">
+			<div class="control">
+			<label>Date Wise</label>
+			<input type="radio" ng-model="report_flag" value="date_flag" ng-click="select_report_type('date_flag')"/>
+			</div>
+		</div>
+		<div class="col-md-6 col-sm-6">
+			<div class="control">
+			<label>Customer Wise</label>
+			<input type="radio" ng-model="report_flag"value="customer_flag" ng-click="select_report_type('customer_flag')"/>
+			</div>
+		</div>
+		<div ng-show="show_date">
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+				<label>Start date</label>
+				<input type="text" id="start_date"ng-model="start_date"/>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+				<label>End date</label>
+				<input type="text" id="end_date" ng-model="end_date"/>
+				</div>
+			</div>
+		</div>
+		<div ng-show="show_customer">
+			<div class="col-md-8 col-sm-8">
+				<div class="control" >
+					<label>Customer</label>
+					<input type="text" ng-model="customer_name" ng-change="search_customer()" ng-click="select_customer_flag=true" id="sales_entry_customer" autocomplete="off"/>
+					<div class="search_list" ng-show="select_customer_flag">
+						<div ng-repeat="customer in customers track by $index" class="search_list_item" ng-click="select_customer(customer)" ng-class="{'highlight': $index == focusIndex}">
+						<span>[[customer.name]]</span>
+						</div>
+					</div>
+					<p class="error_msg">[[no_customer_msg]]</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-12 col-sm-12">
+	<div class="button_control" >
+		<p class="error_msg">[[validate_error_msg]]</p>
+		<input type="submit" value="View" ng-click="view_ledger()">
+		<input type="submit"  value="Generate PDF" ng-click="get_received_report()" >
+	</div>
+</div>
+<table ng-show="sales_details.length > 0" class="table list_table">
+	<tr>
+		<th>#</th>
+		<th>Date</th>
+		<th>Customer Name</th>
+		<th>Invoice</th>
+		<th>Type/ Particulars</th>
+		<th>Payment Terms</th>
+		<th>Total Amount</th>
+	</tr>
+	<tr ng-repeat="sale in sales_details">
+		<td>[[$index+1]]</td>
+		<td>[[sale.invoice_date]]</td>
+		<td>[[sale.customer]]</td>
+		<td>[[sale.invoice_no]]</td>
+		<td>Sales</td>
+		<td></td>
+		<td>[[sale.grant_total]]</td>
+	</tr>
+	</table>
+	
+{% endblock content %}

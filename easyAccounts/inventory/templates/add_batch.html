@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %} {% if batch_id %} Edit Batch {% else %} Add Batch {% endif %} {% endblock title%}
+{% block body_id %}inventory{% endblock %}
+{% block controller %} ng-controller="AddBatchController" ng-init="init('{{ csrf_token }}', '{{ batch_id }}')" 
+{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'categories' %}"> Categories </a></li>
+		<li> <a href="{% url 'products' %}"> Products </a></li>
+		<li> <a href="{% url 'brands' %}"> Brands </a></li>
+		<li> <a href="{% url 'vat' %}"> Vat Type </a></li>
+		<li> <a href="{% url 'items' %}" class="no-border"> Items </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'batches' %}"> Batches </a></li>
+		<li> <a href="{% url 'opening_stock' %}"> Opening Stock </a></li>
+	</ul>
+{% endblock %}
+{% block sub_menu %}
+	<li class=""> <a href="{% url 'batches' %}"> List </a></li>
+	<li class="horizontal_menu_active"> <a href="{% url 'add_batch' %}"> {% if batch_id %} Edit Batch {% else %} Add Batch {% endif %} </a></li>
+{% endblock sub_menu%}
+{% block extrahead %}
+	<script>
+		$(function() {
+		$( "#created_date" ).datepicker();
+		$( "#expiry_date" ).datepicker();
+		});
+	</script>
+{% endblock %}
+{% block content %}
+	<div  id="new_batch">
+		{% if batch_id %}
+			<h2> Edit Batch </h2>
+		{% else %}
+			<h2> Add Batch </h2>
+		{% endif %}
+		<form >
+			<div class="col-md-6 col-sm-6">
+				<h3> New Batch </h3>
+				<div class="control">
+					<label>Batch Name</label>
+					<input type="text" ng-model="batch.name"/>
+				</div>
+				<div class="control">
+					<label>Created date</label>
+					<input type="text" id="created_date"ng-model="batch.created_date"/>
+				</div>
+				<div class="control">
+					<label>Expiry date</label>
+					<input type="text" id="expiry_date" ng-model="batch.expiry_date"/>
+				</div>
+				<div >
+					<p class="error_msg">[[validate_batch_error_msg]]</p>
+					<input class="create_button" type="submit" value="Save" ng-click="save_batch()">
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock content %}

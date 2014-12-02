@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block body_id %}inventory{% endblock %}
+{% block title %} {% if product_id %} Edit Product {% else %} Add Product {% endif %}  {% endblock title%}
+{% block controller %} ng-controller="AddMultipleProductController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'categories' %}" class="no-border"> Categories </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'products' %}"> Products </a></li>
+		<li> <a href="{% url 'brands' %}"> Brands </a></li>
+		<li> <a href="{% url 'vat' %}"> Vat Type </a></li>
+		<li> <a href="{% url 'items' %}"> Items </a></li>
+		<li> <a href="{% url 'batches' %}"> Batches </a></li>
+		<li> <a href="{% url 'opening_stock' %}"> Opening Stock </a></li>
+	</ul>
+{% endblock %}
+{% block sub_menu %}
+	<li class=""> <a href="{% url 'products' %}"> List </a></li>
+	<li class=""> <a href="{% url 'add_product' %}"> {% if product_id %} Edit Product {% else %} Add Product {% endif%} </a></li>
+	<li class="horizontal_menu_active"> <a href="{% url 'add_multiple_product' %}"> Add Multiple Products </a></li>
+{% endblock sub_menu%}
+{% block content %}
+	{% if product_id %}
+		<h2> Edit Product </h2>
+	{% else %}
+		<h2> Add Product </h2>
+	{% endif %}
+		<form name="add_product_form">
+			<div class="col-md-8 col-sm-8 margin-top">
+				<table class="table table-striped">
+					<tr>
+						<th>#</th>
+						<th>Category</th>
+						<th>Name</th>
+						<th>Delete</th>
+					</tr>
+					<tr ng-repeat="product in product_list">
+						<td>[[$index+1]]</td>
+						<td>
+							<div class="control">
+								<input type="text" ng-model="product.category_name" name="category_name" ng-change="get_category_list(product)"/>
+								<div class="search_container">
+									<div class="search_list" ng-show="product.categories.length > 0">
+										<div ng-repeat="category in product.categories" ng-click="select_category(category)" class="search_list_item" ng-class="{'highlight': $index == focusIndex}">
+											<span>[[category.name]]</span>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</td>
+						<td><input type="text" ng-model="product.name" name="product_name"/></td>
+						<td><a href="" ng-click="remove_product(product)">X</a></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-8 col-sm-8">
+				<div class="button_control">
+					<input class="create_button" type="button" value="Bulk Products" ng-click="add_bulk_products('')" />
+					<input class="create_button" type="button" value="Single Product" ng-click="add_bulk_products('single')" />
+					<input class="create_button" type="button" value="Save" ng-click="save_product()"/>
+					<p class="error_msg">[[validate_product_error_msg]]</p>
+					<p class="error_msg">[[no_categories_msg]]</p>
+				</div>
+			</div>
+{% endblock %}

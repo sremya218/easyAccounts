@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="21.875153"
+   height="21.864687"
+   id="svg3299"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="New document 2">
+  <defs
+     id="defs3301" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7.9195959"
+     inkscape:cx="11.535081"
+     inkscape:cy="11.683925"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="485"
+     inkscape:window-height="399"
+     inkscape:window-x="1"
+     inkscape:window-y="56"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3304">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-620.49101,-632.85846)">
+    <path
+       inkscape:connector-curvature="0"
+       d="m 636.54648,635.1106 3.55625,3.55625 -11.72,11.72 -3.55625,-3.55625 11.72,-11.72 z m -13.7575,17.31375 1.06375,-3.75 2.68625,2.685 -3.75,1.065 z m -1.36,2.29875 c 0.085,0 0.17125,-0.0125 0.25625,-0.0362 l 6.90125,-1.95875 c 0.215,-0.06 0.3725,-0.21 0.495,-0.38875 l 13.01,-13.01 c 0.36625,-0.36625 0.36625,-0.95875 0,-1.325 l -4.88125,-4.8825 c -0.3525,-0.35125 -0.975,-0.35125 -1.32625,0 l -13.00875,13.00875 c -0.17875,0.1225 -0.33,0.28125 -0.39125,0.49625 l -1.9575,6.9025 c -0.0925,0.3275 -10e-4,0.67875 0.23875,0.91875 0.17875,0.1775 0.4175,0.275 0.66375,0.275"
+       style="fill:#999999;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path28" />
+  </g>
+</svg>

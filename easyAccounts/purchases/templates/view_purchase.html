@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block body_id %}purchases{% endblock %}
+{% block title %} View Purchase {% endblock title%}
+{% block controller %} ng-controller="ViewPurchaseController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'purchase_entry' %}" class="no-border"> Purchase Entry </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'purchase_view' %}"> View Purchase </a></li>
+		<li> <a href="{% url 'purchase_return' %}"> Purchase Return </a></li>
+		<li> <a href="{% url 'purchase_return_view' %}"> Purchase Return View</a></li>
+		<li><a href="{% url 'price_settings' %}">Price Settings</a></li>
+	</ul>
+{% endblock %}
+{% block dialogue_popup %}
+	{% include 'show_payment_details.html' %}  
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+	<h2> Purchase </h2>
+	<div class="purchase_entry row">
+		<form name="purchase_form">	
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Refernce No</label>
+					<input type="text" ng-model="invoice_no" ng-change="get_purchase_details()">
+					<p class="error_msg">[[no_purchase_error]]</p>
+				</div>
+				<div class="control">
+					<label>DO No</label>
+					<input type="text" ng-model="purchase.do_no" id="do_no" readonly> 
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Invoice Date</label>
+					<input type="text" id="invoice_date" readonly ng-model="purchase.invoice_date">
+				</div>
+				<div class="control">
+					<label>Supplier</label>
+					<input type="text" ng-model="purchase.supplier" readonly> 
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Purchase Invoice</label>
+					<input type="text" readonly ng-model="purchase.invoice_no">
+				</div>
+				<div class="control">
+					<label>Transaction Reference</label>
+					<input type="text" ng-model="purchase.transaction_ref" readonly> 
+				</div>
+			</div>
+			<div class="col-md-9 col-sm-9">
+				<label>Payment Mode</label>
+				<div class="col-md-8 col-sm-4">
+					<input type="radio" ng-model="purchase.payment_mode" value="cash" disabled/>
+					<label>Cash</label>
+					<input type="radio" ng-model="purchase.payment_mode" value="cheque" disabled/>
+					<label>Cheque</label>
+					<input type="radio" ng-model="purchase.payment_mode" value="card" disabled/>
+					<label>Card</label>
+					<input type="radio" ng-model="purchase.payment_mode" value="credit" disabled/>
+					<label>Credit</label>
+				</div> 
+				<div class="control">
+					<a href="" ng-show="purchase.payment_mode == 'card' || purchase.payment_mode == 'cheque' " class="create_button" ng-click="show_payment_details()">View Payment Details</a>
+				</div>
+			</div>
+	<!-- 		<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Supplier Tin Number</label>
+					<input type="text"  readonly ng-model="purchase.supplier_tin">
+				</div>
+				<div class="control">
+					<label>Tin Number</label>
+					<input type="text" ng-model="purchase.owner_tin" readonly> 
+				</div>
+			</div> -->
+			<table class="table list_table table-striped rules" ng-show="purchase.items.length > 0">
+				<tr> 
+					<th> # </th>
+					<th> Item </th>
+					<th> Batch </th>
+					<th> UOM </th>
+					<th> Quantity </th>
+					<th> Unit Price </th>
+					<!-- <th> Tax </th> -->
+					<th> Net Amount </th>
+				</tr>
+				<tr ng-repeat="item in purchase.items track by $index">
+					<td>[[$index+1]]</td>
+					<td>
+						<span>[[item.item_name]]</span>
+					</td>
+					<td>
+						<span>[[item.batch_name]]</span>				
+					</td>
+					<td>
+						<span>[[item.uom]]</span>
+					</td>
+					<td>
+						<span>[[item.purchased_quantity]]</span></td>
+					<td>
+						<span>[[item.purchase_price]]</span>
+					</td>
+					<!-- <td>
+						<span>[[item.tax]]</span>
+					</td> -->
+					<td><span>[[item.net_amount]]</span></td>
+				</tr> 
+			</table>
+			<div class="col-md-6 col-sm-6"	>
+				<div class="control">
+					<label>Discount</label>
+					<input type="text" ng-model="purchase.discount" readonly/>
+				</div>
+				<!-- <div class="control">
+					<label>Purchase Tax</label>
+					<input type="text" ng-model="purchase.purchase_tax" readonly/>
+				</div> -->
+				<div class="control">
+					<label>Grant Total</label>
+					<input type="text" ng-model="purchase.grant_total" readonly/>
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}

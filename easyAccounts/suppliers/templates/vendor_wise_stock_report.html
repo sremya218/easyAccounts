@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block body_id %}reports{% endblock %}
+{% block title %} Vendor wise Stock Report{% endblock title%}
+{% block controller %} ng-controller="VendorStockReportController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+
+{% block extrahead %}
+	<script>
+		$(function() {
+			$("#start_date").datepicker();
+			$("#end_date").datepicker();
+		});
+	</script>
+{% endblock %}
+{% block horizontal_menu %}
+	<ul>
+		<li class=""> <a href="{% url 'purchase_report' %}"> Purchase </a></li>
+		<li> <a href="{% url 'purchase_return_report' %}"> Purchase Return </a></li>
+		<li> <a href="{% url 'sales_report' %}"> Sales </a></li>
+		<li> <a href="{% url 'sales_return_report' %}"> Sales Return </a></li>
+		<li class=""><a href="{% url 'day_book' %}" class="no-border"> Accounts </a></li>
+		<li class="horizontal_menu_active"><a href="{% url 'vendor_stock_report' %}"> Suppliers </a></li>
+		<li ><a href="{% url 'stock_report' %}"> Inventory </a></li>
+	</ul>
+{% endblock %}
+{% block sub_menu %}
+	<li class="horizontal_menu_active"> <a href="{% url 'vendor_stock_report' %}"> Vendor Wise Stock Report </a></li>
+	<li > <a href="{% url 'vendor_wise_item_report' %}"> Vendor Wise Item Report </a></li>
+	<li> <a href="{% url 'vendor_wise_payment_report' %}"> Vendor Wise Payment Report </a></li>
+{% endblock sub_menu%}
+
+{% block content %}
+	<h2>Vendor Wise Report</h2>
+	<div class="report_form row">
+		<div class="col-md-6 col-sm-6">
+			<div class="control" >
+				<label>Vendor</label>
+				<input type="text" name="supplier_name" ng-model="supplier_name" ng-change="get_supplier_details()" autocomplete="off">
+				<div class="search_list_container">
+					<div class="search_list" ng-show="suppliers.length > 0">
+						<div class="search_list_item" ng-repeat="supplier in suppliers track by $index" ng-class="{'highlight': $index == focusIndex}" ng-click="select_supplier(supplier)">
+							<span>[[supplier.name]]</span>
+						</div>
+					</div>
+				</div>
+				<p class="error_msg">[[no_supplier_msg]]</p>
+		</div>
+		
+		<table class="table table-striped list_table" ng-show="vendor_stock_details.length > 0">
+			<tr>
+				<th>Item Name</th>
+				<th>Item Code</th>
+				<th>Batch</th>
+				<th>Stock</th>
+				<th>UOM</th>
+			</tr>
+			<tr ng-repeat="stock in visible_list">
+				<td>[[stock.item_name]]</td>
+				<td>[[stock.item_code]]</td>
+				<td>[[stock.batch_name]]</td>
+				<td>[[stock.stock]]</td>
+				<td>[[stock.uom]]</td>
+			</tr>
+		</table>
+		<div ng-show="vendor_stock_details.length > 0">
+			{% include 'pagination_div.html' %}
+		</div>
+		<div class="col-md-12 col-sm-12">
+			<div class="button_control" >
+				<p class="error_msg">[[report_mesg]]</p>
+				<input type="submit" value="View" ng-click="generate_supplier_stock_report('view')">
+				<input type="submit" value="Generate Report" ng-click="generate_supplier_stock_report()">
+			</div>
+		</div>
+		
+	</div>
+		
+{% endblock content %}

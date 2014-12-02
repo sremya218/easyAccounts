@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Edit Staff{% endblock title%}
+{% block body_id %}edit_staff{% endblock body_id%}
+{% block controller %}ng-controller="EditStaffController" ng-init="init('{{csrf_token}}', '{{staff_id}}')" {% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li class=""> <a href="{% url 'staffs' %}" class="no-border"> Staff List </a></li>
+		<li class=""> <a href="{% url 'add_staff' %}" class="no-border">New Staff </a></li>
+		<li class="horizontal_menu_active"> <a href="">Edit Staff </a></li>
+		<li class=""> <a href="{% url 'permissions' %}">Staff Permissions </a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+
+{% block content %}
+	<h2>Edit Staff</h2>
+	<div id="add_staff" class="row">
+		<form name="add_staff" >
+			<div class="control"> 
+				<label>First Name</label>
+				<input type="text" ng-model="staff_details.first_name">
+			</div>
+			<div class="control"> 
+				<label>Last Name</label>
+				<input type="text" ng-model="staff_details.last_name">
+			</div>
+			<div class="control"> 
+				<label>Email</label>
+				<input type="text" ng-model="staff_details.email">
+			</div>
+			<div class="control"> 
+				<label>Designation</label>
+				<input type="text" ng-model="staff_details.designation">
+			</div>
+	<!-- 		<div> 
+				<label>Group</label>
+				<select ng-options="group.id as group.name for group in groups" ng-model="staff_details.group">
+				<option value="" disabled>Select</option>
+				</select>
+			</div> -->
+			<div class="control"> 
+				<label>Address</label>
+				<textarea ng-model="address"></textarea>
+			</div>
+			<div class="control"> 
+				<label>Contact No.</label>
+				<input type="text" ng-model="staff_details.contact_no">
+			</div>
+			<div class="button_control">
+				<p class='error_msg'>[[username_exists_msg]]</p>
+				<p class="error_msg">[[validation_staff_message]]</p>
+				<input type="submit" value="Save" ng-click="save_staff()">
+			</div>
+		</form>
+	</div>
+{% endblock content %}

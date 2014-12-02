@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block body_id %}purchase{% endblock %}
+{% block title %} Purchase Return View{% endblock title%}
+{% block controller %} ng-controller="PurchaseReturnViewController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'purchase_entry' %}"> Purchase Entry </a></li>
+		<li> <a href="{% url 'purchase_view' %}"> View Purchase </a></li>
+		<li > <a href="{% url 'purchase_return' %}" class="no-border"> Purchase Return </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'purchase_return_view' %}"> Purchase Return View</a></li>
+		<li><a href="{% url 'price_settings' %}">Price Settings</a></li>
+	</ul>
+{% endblock %}
+{% block dialogue_popup %}
+	{% include 'show_payment_details.html' %}  
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+
+{% block content %}
+	
+	<h2> Purchase Return </h2>
+	<div class="form_container wide_form">
+		<form name="purchase_return_form">	
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Reference No</label>
+					<input type="text" ng-model="purchase_return_invoice" ng-change="get_purchase_return_details()">
+					<p class="error_msg">[[purchase_error_message]]</p>
+				</div>
+				<div class="control">
+					<label>Transction Reference </label>
+					<input type="text" ng-model="purchase_return.transaction_ref" readonly> 
+				</div>					
+				<div class="control">
+					<label>Return Invoice</label>
+					<input type="text" ng-model="purchase_return.invoice_no" readonly>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Return Invoice Date</label>
+					<input type="text" id="invoice_date" ng-model="purchase_return.invoice_date" readonly>
+				</div>
+
+				<div class="control">
+					<label>Supplier</label>
+					<input type="text" ng-model="purchase_return.supplier" readonly> 
+				</div>
+				<div class="control">
+					<label>Payment Mode</label>
+					
+						<input type="radio" ng-model="purchase_return.payment_mode" value="cash" disabled/>
+						<label>Cash</label>
+						<input type="radio" ng-model="purchase_return.payment_mode" value="cheque" disabled/>
+						<label>Cheque</label>
+						<input type="radio" ng-model="purchase_return.payment_mode" value="card" disabled/>
+						<label>Card</label>
+					</div> 
+				</div>
+				<div class="control">
+					<a href="" ng-show="purchase_return.payment_mode == 'card' || purchase_return.payment_mode == 'cheque' " class="create_button" ng-click="show_payment_details()">View Payment Details</a>
+				</div>
+			</div>
+
+			<table class="table list_table table-striped rules" ng-show="purchase_return.items.length > 0">
+				<tr>
+					<th>#</th>
+					<!-- <th> Tax</th> -->
+					<th> Item Name </th>
+					<th> Batch </th>
+					<th> Stock </th>
+					<th> Purchased Qty </th>
+					<th> Returned Qty </th>
+					<th> Uom </th>
+					<th> Purchase Price </th>
+					<th> Quantity </th>
+					<!-- <th> Tax </th> -->
+					<th> Net Amount </th>
+				</tr>
+				<tr ng-repeat="item in purchase_return.items">
+					<td>[[$index+1]]</td>
+					<!-- <td><input type="checkbox" name="tax_included" ng-model="item.tax_inclusive" disabled/></td> -->
+					<td>[[item.name]]</td>
+					<td>[[item.batch_name]]</td>
+					<td>[[item.stock]]</td>
+					<td>[[item.purchased_quantity]]</td>
+					<td>[[item.returned_qty]]</td>
+					<td>[[item.purchase_unit]]</td>
+					<td>[[item.purchase_price]]</td>
+					<td>[[item.quantity]]</td>
+					<!-- <td>[[item.tax]]</td> -->
+					<td>[[item.net_amount]]</td>
+				</tr> 
+			</table>	
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Discount</label>
+					<input type="text" ng-model="purchase_return.discount" readonly>
+				</div>
+				<!-- <div class="control">
+					<label>Purchase Tax</label>
+					<input type="text" ng-model="purchase_return.purchase_tax" readonly>
+				</div> -->
+				<div class="control">
+					<label>Grant Total</label>
+					<input type="text" ng-model="purchase_return.grant_total" readonly>
+				</div>
+				<div class="control">
+					<div class="control">
+						<div class="control">
+						</div>
+					</div>
+				</div>
+			<div>
+		</form>
+	</div>
+{% endblock content%}

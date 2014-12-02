@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block body_id %}reports{% endblock %}
+{% block title %} Sales Report{% endblock title%}
+{% block controller %} ng-controller="VendorWiseSalesReportController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+
+{% block extrahead %}
+	<script>
+		$(function() {
+			$("#start_date").datepicker();
+			$("#end_date").datepicker();
+		});
+	</script>
+{% endblock %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'purchase_report' %}"> Purchase </a></li>
+		<li> <a href="{% url 'purchase_return_report' %}" class="no-border"> Purchase Return </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'sales_report' %}"> Sales </a></li>
+		<li> <a href="{% url 'sales_return_report' %}"> Sales Return </a></li>
+		<li><a href="{% url 'day_book' %}"> Accounts </a></li>
+		<li><a href="{% url 'vendor_stock_report' %}"> Suppliers </a></li>
+		<li><a href="{% url 'received_report' %}"> Customers </a></li>
+		<li><a href="{% url 'salesman_incentive_report' %}"> Salesman </a></li>
+		<li><a href="{% url 'pdc_report' %}"> PDC Report </a></li>
+		<li ><a href="{% url 'stock_report' %}"> Inventory </a></li>
+	</ul>
+{% endblock %}
+{% block sub_menu %}
+	<li> <a href="{% url 'sales_report' %}"> Date Wise Report </a></li>
+	<li> <a href="{% url  'sales_report_customer_wise' %}"> Customer Wise Report  </a></li>
+	<li> <a href="{% url  'sales_report_area_customer_wise' %}"> Area Wise Sales Report  </a></li>
+	<li><a href="{% url 'sales_report_brand_wise' %}">Brand Wise Report</a></li>
+	<li ><a href="{% url 'sales_report_category_wise' %}">Category Wise Report</a></li>
+	<li class="horizontal_menu_active"><a href="{% url 'sales_report_vendor_wise' %}">Vendor Wise Report</a></li>
+	<li><a href="{% url 'sales_report_item_wise' %}">Item Wise Report</a></li>
+{% endblock sub_menu%}
+
+{% block content %}
+	<h2>Vendor Wise Report</h2>
+	<div class="report_form row">
+		<div class="col-md-6 col-sm-6">
+			<div class="control" >
+				<label>Supplier</label>
+					<input type="text" ng-model="supplier_name" ng-change="search_supplier()" ng-click="select_supplier_flag=true"> 
+					<div class="search_list_container">
+						<div ng-show="select_supplier_flag" class="search_list">
+							<div class="search_list_item" ng-repeat="supplier in suppliers track by $index" ng-class="{'highlight': $index == focusIndex}" ng-click="select_supplier(supplier)">
+								<span>[[supplier.name]]</span>
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+		
+		<table class="table table-striped list_table" ng-show="sales.length > 0">
+			<tr>
+				<th>Invoice No</th>
+				<th>Invoice Date</th>
+				<th>Transaction Reference</th>
+				<th>Tax</th>
+				<th>Discount</th>
+				<th>Grant Total</th>
+			</tr>
+			<tr ng-repeat="sale in visible_list">
+				<td>[[sale.invoice_no]]</td>
+				<td>[[sale.invoice_date]]</td>
+				<td>[[sale.transaction_reference_no]]</td>
+				<td>[[sale.total_tax]]</td>
+				<td>[[sale.discount]]</td>
+				<td>[[sale.grant_total]]</td>
+			</tr>
+		</table>
+		<div ng-show="sales.length > 0">
+			{% include 'pagination_div.html' %}
+		</div>
+		<div class="col-md-12 col-sm-12">
+			<div class="button_control" >
+				<p class="error_msg">[[report_mesg]]</p>
+				<input type="button" value="View" ng-click="generate_supplier_report('view')">
+				<input type="button" value="Generate Report" ng-click="generate_supplier_report()">
+			</div>
+		</div>
+		
+	</div>
+		
+{% endblock content %}

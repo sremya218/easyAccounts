@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Bonus Points {% endblock title%}
+{% block body_id %}bonus_points{% endblock %}
+{% block controller %} ng-controller="BonusPointsController" ng-init="init('{{ csrf_token }}')" 
+{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li class="horizontal_menu_active"> <a href="{% url 'bonus_points' %}">Bonus Points </a></li>
+		<li class=""> <a href="{% url 'create_bonus_point' %}">Create new </a></li>
+		<li class=""> <a href="{% url 'set_bonus_point' %}">Set Bonus Point </a></li>
+		<li class=""> <a href="{% url 'view_bonus_point' %}">View Bonus Point </a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+	<h2>Bonus Points</h2>
+	<div class="row">
+		<table class="table table-striped" ng-show="bonus_points.length > 0">
+			<tr>
+				<td>#</td>
+				<td>Type</td>
+				<td>Point</td>
+				<td>Amount</td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr ng-repeat="bonus_point in visible_list">
+				<td>[[($index)+((current_page-1)*page_interval+1)]]</td>
+				<td>[[bonus_point.type]]</td>
+				<td>[[bonus_point.point]]</td>
+				<td>[[bonus_point.amount]]</td>
+				<td><a href="" ng-click="edit_bonus_point(bonus_point)">Edit</a></td>
+				<td><a href="" ng-click="delete_bonus_point(bonus_point)">Delete</a></td>
+			</tr>
+		</table>
+	</div>
+	<div ng-show="bonus_points.length > 0 ">
+		{% include 'pagination_div.html' %}
+	</div>
+{% endblock %}
