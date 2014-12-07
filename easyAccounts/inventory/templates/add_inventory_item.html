@@ -13,7 +13,6 @@
 		<li> <a href="{% url 'categories' %}"> Categories </a></li>
 		<li> <a href="{% url 'products' %}"> Products </a></li>
 		<li> <a href="{% url 'brands' %}"> Brands </a></li>
-		<li> <a href="{% url 'vat' %}" class="no-border"> Vat Type </a></li>
 		<li class="horizontal_menu_active"> <a href="{% url 'items' %}"> Items </a></li>
 		<li> <a href="{% url 'batches' %}"> Batches </a></li>
 		<li> <a href="{% url 'opening_stock' %}"> Opening Stock </a></li>
@@ -66,7 +65,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="control">
+				<!-- <div class="control">
 					<label>Vat Type</label>
 					<input type="text" ng-model="vat_type" ng-change="get_vat_list()" ng-click="selected_vat_flag=true"/>
 					<div ng-show="selected_vat_flag" class="search_list">
@@ -85,7 +84,7 @@
 				<div class="control">
 					<label>Size</label>
 					<input type="text" ng-model="item.size"/>
-				</div>
+				</div> -->
 			</div>
 			<div class="col-md-6 col-sm-6">
 				<div class="control">

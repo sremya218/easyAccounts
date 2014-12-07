@@ -373,7 +373,6 @@ function PaymentController($scope, $http){
 	$scope.validate_payment = function(){
 		$scope.validate_error_msg = "";
 		var remaining_amount = $scope.payment.balance-$scope.payment.amount;
-		console.log(remaining_amount);
 		if($scope.payment.transaction_date == '' || $scope.payment.transaction_date == undefined){
 			$scope.validate_error_msg = 'Please select the date of payment';
 			return false;
@@ -1043,12 +1042,15 @@ function OpeningBalanceController($scope, $http) {
 		$scope.opening_balance = {
 			'amount': '',
 			'ledger_name': '',
-			'ledger': ''
+			'ledger': '',
+			'date': ''
 		}
 	}
 
 	$scope.validate_opening_balance = function(){
 		$scope.validate_error_msg = "";
+		$scope.opening_balance.date = $('#opb_date').val();
+		console.log($scope.opening_balance.date);
 		if($scope.opening_balance.ledger == '' || $scope.opening_balance.ledger == undefined){
 			$scope.validate_error_msg = 'Please choose the account';
 			return false;
@@ -1058,8 +1060,11 @@ function OpeningBalanceController($scope, $http) {
 		} else if($scope.opening_balance.amount !== 0 && !Number($scope.opening_balance.amount)){
 			$scope.validate_error_msg = 'Please enter a valid amount';
 			return false;
-		} return true;
-
+		} else if($scope.opening_balance.date == ''){
+			$scope.validate_error_msg = 'Please enter a valid date';
+			return false;
+		}
+		return true;
 	}
 
 	$scope.save_opening_balance = function(){

@@ -2,6 +2,13 @@
 {% block body_id %}accounts{% endblock %}
 {% block title %} Opening Balance {% endblock title%}
 {% block controller %} ng-controller="OpeningBalanceController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block extrahead %}
+	<script>
+		$(function() {
+			$("#opb_date").datepicker();
+		});
+	</script>
+{% endblock %}
 {% block dialogue_popup %}   
     {% include 'show_transaction_details.html' %} 
 {% endblock %}
@@ -34,6 +41,10 @@
 			<div class="control">
 				<label>Amount</label>
 				<input type="text" name="amount" ng-model="opening_balance.amount">
+			</div>
+			<div class="control">
+				<label> Date </label>
+				<input type="text" value="{{current_date}}" id="opb_date" >
 			</div>
 		</div>
 			<div class="button_control">

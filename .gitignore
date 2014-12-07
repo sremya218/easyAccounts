@@ -13,7 +13,6 @@ develop-eggs/
 dist/
 downloads/
 eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -46,6 +45,7 @@ coverage.xml
 
 # Django stuff:
 *.log
+local_settings.py
 
 # Sphinx documentation
 docs/_build/

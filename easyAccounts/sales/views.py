@@ -345,94 +345,72 @@ class SalesEntry(View):
             return render(request, 'sales.html', {'current_date': current_date.strftime('%d/%m/%Y'),'prepared_by': name})
 
     def post(self, request, *args, **kwargs):
+        
         sales_details = ast.literal_eval(request.POST['sales_details']) 
+        # try:
+        sale = Sale()  
+        sale.created_by =  request.user  
+        sale.customer_tin = sales_details['customer_tin']
+        sale.owner_tin = sales_details['owner_tin']
+        sale.sales_invoice_date = datetime.strptime(sales_details['invoice_date'], '%d/%m/%Y')
+        if sales_details['do_no']:
+            sale.do_number = sales_details['do_no']
+        sale.bill_type  = sales_details['bill_type']
         try:
-            sale = Sale()  
-            sale.created_by =  request.user  
-            sale.customer_tin = sales_details['customer_tin']
-            sale.owner_tin = sales_details['owner_tin']
-            sale.sales_invoice_date = datetime.strptime(sales_details['invoice_date'], '%d/%m/%Y')
-            if sales_details['do_no']:
-                sale.do_number = sales_details['do_no']
-            sale.bill_type  = sales_details['bill_type']
-            try:
-                transaction_reference_no = Sale.objects.latest('id').id
-                if sales_details['bill_type'] == 'Receipt':
-                    sale.transaction_reference_no = 'SREC'+str(transaction_reference_no+1)
-                else:
-                    sale.transaction_reference_no = 'SINV'+str(transaction_reference_no+1)
-            except:
-                transaction_reference_no = '1'
-                if sales_details['bill_type'] == 'Receipt':
-                    sale.transaction_reference_no = 'SREC'+str(transaction_reference_no)
-                else:
-                    sale.transaction_reference_no = 'SINV'+str(transaction_reference_no)
-            sale.payment_mode = sales_details['payment_mode']
-            if sales_details['payment_mode'] == 'cheque':
-                sale.bank_name = sales_details['bank_name']
-                sale.branch = sales_details['branch']
-                sale.cheque_number = sales_details['cheque_no']
-                sale.cheque_date = datetime.strptime(sales_details['cheque_date'], '%d/%m/%Y')
-            elif sales_details['payment_mode'] == 'card':
-                sale.bank_name = sales_details['bank_name']
-                sale.card_holder_name = sales_details['card_holder_name']
-                sale.card_number = sales_details['card_no']
-            if sales_details['salesman']:
-                salesman = Salesman.objects.get(id=sales_details['salesman'])
-                sale.salesman = salesman
-            if sales_details['customer']:
-                customer = Customer.objects.get(id=sales_details['customer'])
-                sale.customer = customer
-            if sales_details['discount'] !='':
-                sale.discount = sales_details['discount']
-            if sales_details['round_off'] != '':
-                sale.round_off = sales_details['round_off']
-            sale.grant_total = sales_details['grant_total']
-            if sales_details['cess'] != '':
-                sale.cess = sales_details['cess']
-            sales_items = sales_details['items']            
-            sale.save()
-            if sales_details['deliverynote_id']:
-                deliverynote = DeliveryNote.objects.get(id=sales_details['deliverynote_id'])
-                sale.deliverynote = deliverynote
-                deliverynote.is_converted = True
-                deliverynote.save()
-            if sales_details['invoice_no']:
-                sale.sales_invoice_number = sales_details['invoice_no']
-            
-            try:
-                serial_no_bill = SerialNoBill.objects.latest('id') 
-            except:
-                serial_no_bill = None
-            try:
-                serial_no_invoice = SerialNoInvoice.objects.latest('id') 
-            except:
-                serial_no_invoice = None
-            if serial_no_bill and sales_details['bill_type']=='Receipt':
-                if serial_no_bill.is_auto_generated:
-                    receipt = Receipt()
-                    receipt.sales = sale
-                    try:
-                        receipt_no  = Receipt.objects.latest('id').receipt_no
-                        receipt.receipt_no = "RCPT-" + str(int(receipt_no.split('-')[1]) + 1)
-                        sale.sales_invoice_number = receipt.receipt_no
-                    except Exception as ex:
-                        receipt_no = 1
-                        receipt.receipt_no = "RCPT-" + str(receipt_no)
-                        sale.sales_invoice_number = receipt.receipt_no
-                    receipt.save()
-                else:
-                    receipt = Receipt()
-                    receipt.sales = sale
-                    try:
-                        receipt_no  = Receipt.objects.latest('id').receipt_no
-                        receipt.receipt_no = serial_no_bill.prefix+ str(int(receipt_no.split('-')[1]) + 1)
-                        sale.sales_invoice_number = receipt.receipt_no
-                    except Exception as ex:
-                        receipt.receipt_no = serial_no_bill.prefix + str(int(serial_no_bill.starting_no) + 1)
-                        sale.sales_invoice_number = receipt.receipt_no
-                    receipt.save()
-            elif sales_details['bill_type'] == 'Receipt':
+            transaction_reference_no = Sale.objects.latest('id').id
+            if sales_details['bill_type'] == 'Receipt':
+                sale.transaction_reference_no = 'SREC'+str(transaction_reference_no+1)
+            else:
+                sale.transaction_reference_no = 'SINV'+str(transaction_reference_no+1)
+        except:
+            transaction_reference_no = '1'
+            if sales_details['bill_type'] == 'Receipt':
+                sale.transaction_reference_no = 'SREC'+str(transaction_reference_no)
+            else:
+                sale.transaction_reference_no = 'SINV'+str(transaction_reference_no)
+        sale.payment_mode = sales_details['payment_mode']
+        if sales_details['payment_mode'] == 'cheque':
+            sale.bank_name = sales_details['bank_name']
+            sale.branch = sales_details['branch']
+            sale.cheque_number = sales_details['cheque_no']
+            sale.cheque_date = datetime.strptime(sales_details['cheque_date'], '%d/%m/%Y')
+        elif sales_details['payment_mode'] == 'card':
+            sale.bank_name = sales_details['bank_name']
+            sale.card_holder_name = sales_details['card_holder_name']
+            sale.card_number = sales_details['card_no']
+        if sales_details['salesman']:
+            salesman = Salesman.objects.get(id=sales_details['salesman'])
+            sale.salesman = salesman
+        if sales_details['customer']:
+            customer = Customer.objects.get(id=sales_details['customer'])
+            sale.customer = customer
+        if sales_details['discount'] !='':
+            sale.discount = sales_details['discount']
+        if sales_details['round_off'] != '':
+            sale.round_off = sales_details['round_off']
+        sale.grant_total = sales_details['grant_total']
+        if sales_details['cess'] != '':
+            sale.cess = sales_details['cess']
+        sales_items = sales_details['items']
+        if sales_details['deliverynote_id']:
+            deliverynote = DeliveryNote.objects.get(id=sales_details['deliverynote_id'])
+            sale.deliverynote = deliverynote
+            deliverynote.is_converted = True
+            deliverynote.save()
+        sale.save()
+        if sales_details['invoice_no']:
+            sale.sales_invoice_number = sales_details['invoice_no']
+        
+        try:
+            serial_no_bill = SerialNoBill.objects.latest('id') 
+        except:
+            serial_no_bill = None
+        try:
+            serial_no_invoice = SerialNoInvoice.objects.latest('id') 
+        except:
+            serial_no_invoice = None
+        if serial_no_bill and sales_details['bill_type']=='Receipt':
+            if serial_no_bill.is_auto_generated:
                 receipt = Receipt()
                 receipt.sales = sale
                 try:
@@ -444,33 +422,31 @@ class SalesEntry(View):
                     receipt.receipt_no = "RCPT-" + str(receipt_no)
                     sale.sales_invoice_number = receipt.receipt_no
                 receipt.save()
-            if serial_no_invoice and sales_details['bill_type']=='Invoice':
-                if serial_no_invoice.is_auto_generated:    
-                    invoice = Invoice()
-                    invoice.sales = sale
-                    try:
-                        invoice_no  = Invoice.objects.latest('id').invoice_no
-                        invoice.invoice_no = "INVC-" + str(int(invoice_no.split('-')[1]) + 1)
-                        sale.sales_invoice_number = invoice.invoice_no
-                    except Exception as ex:
-                        invoice_no = 1
-                        invoice.invoice_no = "INVC-" + str(invoice_no)
-                        sale.sales_invoice_number = invoice.invoice_no
-                    invoice.invoice_type = "Tax Inclusive"
-                    invoice.save()
-                else:
-                    invoice = Invoice()
-                    invoice.sales = sale
-                    try:
-                        invoice_no  = Invoice.objects.latest('id').invoice_no
-                        invoice.invoice_no = serial_no_invoice.prefix+ str(int(invoice_no.split('-')[1]) + 1)
-                        sale.sales_invoice_number = invoice.invoice_no
-                    except Exception as ex:
-                        invoice.invoice_no = serial_no_invoice.prefix + str(int(serial_no_invoice.starting_no) + 1)
-                        sale.sales_invoice_number = invoice.invoice_no
-                    invoice.invoice_type = "Tax Inclusive"
-                    invoice.save()
-            elif sales_details['bill_type'] == 'Invoice':
+            else:
+                receipt = Receipt()
+                receipt.sales = sale
+                try:
+                    receipt_no  = Receipt.objects.latest('id').receipt_no
+                    receipt.receipt_no = serial_no_bill.prefix+ str(int(receipt_no.split('-')[1]) + 1)
+                    sale.sales_invoice_number = receipt.receipt_no
+                except Exception as ex:
+                    receipt.receipt_no = serial_no_bill.prefix + str(int(serial_no_bill.starting_no) + 1)
+                    sale.sales_invoice_number = receipt.receipt_no
+                receipt.save()
+        elif sales_details['bill_type'] == 'Receipt':
+            receipt = Receipt()
+            receipt.sales = sale
+            try:
+                receipt_no  = Receipt.objects.latest('id').receipt_no
+                receipt.receipt_no = "RCPT-" + str(int(receipt_no.split('-')[1]) + 1)
+                sale.sales_invoice_number = receipt.receipt_no
+            except Exception as ex:
+                receipt_no = 1
+                receipt.receipt_no = "RCPT-" + str(receipt_no)
+                sale.sales_invoice_number = receipt.receipt_no
+            receipt.save()
+        if serial_no_invoice and sales_details['bill_type']=='Invoice':
+            if serial_no_invoice.is_auto_generated:    
                 invoice = Invoice()
                 invoice.sales = sale
                 try:
@@ -483,274 +459,713 @@ class SalesEntry(View):
                     sale.sales_invoice_number = invoice.invoice_no
                 invoice.invoice_type = "Tax Inclusive"
                 invoice.save()
-            sale.save()
-            total_tax = 0
-            total_cost_price = 0
-            total_freight_value = 0
-            total_purchase_price = 0
-            stock_value_amount = 0
-            for item in sales_items:
-                print "item", item
-                uom =  item['uom']
-                selling_unit = item['uom']
-                sales_item = SalesItem()
-                sales_item.sales = sale
-                batch_item_obj = BatchItem.objects.get(batch__id=item['batch_id'],item__id=item['id'])
-                if sale.salesman and batch_item_obj.salesman_bonus_quantity:
-                    if float(item['quantity']) >= float(batch_item_obj.salesman_bonus_quantity):
-                        if batch_item_obj.salesman_bonus_points:
-                            if sale.salesman.bonus_point:
-                                sale.salesman.bonus_point = float(sale.salesman.bonus_point) + float(batch_item_obj.salesman_bonus_points.bonus_amount)
-                            else:
-                                sale.salesman.bonus_point = float(batch_item_obj.salesman_bonus_points.bonus_amount)
-                            sale.salesman_bonus_point_amount = float(sale.salesman_bonus_point_amount) + float(batch_item_obj.salesman_bonus_points.bonus_amount)
-                            sale.salesman.save()
-                if sale.customer and batch_item_obj.customer_bonus_quantity:
-                    if float(item['quantity']) >= float(batch_item_obj.customer_bonus_quantity):
-                        if batch_item_obj.customer_bonus_points:
-                            if sale.customer.bonus_point:
-                                sale.customer.bonus_point = float(sale.customer.bonus_point) + float(batch_item_obj.customer_bonus_points.bonus_amount)
-                            else:
-                                sale.customer.bonus_point = float(batch_item_obj.customer_bonus_points.bonus_amount)
-                            sale.customer_bonus_point_amount = float(sale.customer_bonus_point_amount) + float(batch_item_obj.customer_bonus_points.bonus_amount)
-                            sale.customer.save()
-                sale.save()
-                sales_item.batch_item = batch_item_obj
-                sales_item.quantity = item['quantity']
-                sales_item.price_type = item['price_type']
-                sales_item.uom = selling_unit
-                sales_item.mrp = item['mrp']
-                sales_item.net_amount = item['net_amount']                
-                sales_item.save()
-                total_tax = float(total_tax) + ( (float(sales_item.net_amount)) - (float(sales_item.mrp)*float(sales_item.quantity)))
-                item_obj = Item.objects.get(id=item['id'])                
-                if item_obj.smallest_unit == selling_unit:
-                    quantity = item['quantity']
-                else:
-                    if selling_unit == 'box':
-                        if item_obj.packets_per_box != None:
-                            quantity = float(item['quantity']) * float(item_obj.packets_per_box)
-                            if item_obj.pieces_per_packet != None:
-                                quantity = float(quantity) * float(item_obj.pieces_per_packet)
-                                if item_obj.unit_per_piece != None:
-                                    quantity = float(quantity) * float(item_obj.unit_per_piece)
-                            if item_obj.unit_per_packet != None:
-                                quantity = float(quantity) * float(item_obj.unit_per_packet)
-                        if item_obj.pieces_per_box != None:
-                            quantity = float(item['quantity']) * float(item_obj.pieces_per_box)
-                            if item_obj.unit_per_piece != None:
-                                quantity = float(quantity) * float(item_obj.unit_per_piece)
-                    if selling_unit == 'packet':
-                        if item_obj.pieces_per_packet != None:
-                            quantity = float(item['quantity']) * float(item_obj.pieces_per_packet)
-                            if item_obj.unit_per_piece != None:
-                                quantity = float(quantity) * float(item_obj.unit_per_piece)
-                        elif item_obj.unit_per_packet != None:
-                                quantity = float(item['quantity']) * float(item_obj.unit_per_packet)
-                    if selling_unit == 'piece':
-                        if item_obj.unit_per_piece != None:
-                            quantity = float(item['quantity']) * float(item_obj.unit_per_piece)
-                sales_item.quantity_in_purchase_unit = float(item['quantity_in_purchase_unit']) / float(item['quantity'])
-                sales_item.quantity_in_smallest_unit = float(quantity) / float(item['quantity'])
-                sales_item.save()
-                batch_item_obj.quantity_in_purchase_unit = float(batch_item_obj.quantity_in_purchase_unit) - float(quantity)           
-                batch_item_obj.quantity_in_smallest_unit = float(batch_item_obj.quantity_in_smallest_unit) - float(quantity)
-                # total_cost_price = float(total_cost_price) + float(item['net_cp'])
-                # total_freight_value = float(total_freight_value) + float(item['net_freight_charge'])
-                sales_item.save()
-                batch_item_obj.save()
-            sale.sales_tax = total_tax
-            sale.save()
-            transaction_1 = Transaction()
-            ledger_entry_debit_customer = LedgerEntry()
-            if sales_details['customer']:
-                customer = Customer.objects.get(id=sales_details['customer'])
-                ledger_entry_debit_customer.ledger = customer.ledger
             else:
-                parent = Ledger.objects.get(name='Sundry Debtors')
-                counter_sales_ledger, created = Ledger.objects.get_or_create(name="Counter Sales", parent=parent)
-                ledger_entry_debit_customer.ledger = counter_sales_ledger
-            ledger_entry_debit_customer.debit_amount = sale.grant_total
-            ledger_entry_debit_customer.date = sale.sales_invoice_date
-            ledger_entry_debit_customer.transaction_reference_number = sale.transaction_reference_no
-            ledger_entry_debit_customer.save()
-            ledger_entry_credit_sales = LedgerEntry()
-            sales_ledger = Ledger.objects.get(name='Sales')
-            ledger_entry_credit_sales.ledger = sales_ledger
+                invoice = Invoice()
+                invoice.sales = sale
+                try:
+                    invoice_no  = Invoice.objects.latest('id').invoice_no
+                    invoice.invoice_no = serial_no_invoice.prefix+ str(int(invoice_no.split('-')[1]) + 1)
+                    sale.sales_invoice_number = invoice.invoice_no
+                except Exception as ex:
+                    invoice.invoice_no = serial_no_invoice.prefix + str(int(serial_no_invoice.starting_no) + 1)
+                    sale.sales_invoice_number = invoice.invoice_no
+                invoice.invoice_type = "Tax Inclusive"
+                invoice.save()
+        elif sales_details['bill_type'] == 'Invoice':
+            invoice = Invoice()
+            invoice.sales = sale
+            try:
+                invoice_no  = Invoice.objects.latest('id').invoice_no
+                invoice.invoice_no = "INVC-" + str(int(invoice_no.split('-')[1]) + 1)
+                sale.sales_invoice_number = invoice.invoice_no
+            except Exception as ex:
+                invoice_no = 1
+                invoice.invoice_no = "INVC-" + str(invoice_no)
+                sale.sales_invoice_number = invoice.invoice_no
+            invoice.invoice_type = "Tax Inclusive"
+            invoice.save()
+        sale.save()
+        total_tax = 0
+        total_cost_price = 0
+        total_freight_value = 0
+        total_purchase_price = 0
+        stock_value_amount = 0
+        for item in sales_items:
+            uom =  item['uom']
+            try:
+                selling_unit = uom['uom']
+            except:
+                selling_unit = uom
+            sales_item = SalesItem()
+            sales_item.sales = sale
+            batch_item_obj = BatchItem.objects.get(batch__id=item['batch_id'],item__id=item['id'])
+            if sale.salesman and batch_item_obj.salesman_bonus_quantity:
+                if float(item['quantity']) >= float(batch_item_obj.salesman_bonus_quantity):
+                    if batch_item_obj.salesman_bonus_points:
+                        if sale.salesman.bonus_point:
+                            sale.salesman.bonus_point = float(sale.salesman.bonus_point) + float(batch_item_obj.salesman_bonus_points.bonus_amount)
+                        else:
+                            sale.salesman.bonus_point = float(batch_item_obj.salesman_bonus_points.bonus_amount)
+                        sale.salesman_bonus_point_amount = float(sale.salesman_bonus_point_amount) + float(batch_item_obj.salesman_bonus_points.bonus_amount)
+                        sale.salesman.save()
+            if sale.customer and batch_item_obj.customer_bonus_quantity:
+                if float(item['quantity']) >= float(batch_item_obj.customer_bonus_quantity):
+                    if batch_item_obj.customer_bonus_points:
+                        if sale.customer.bonus_point:
+                            sale.customer.bonus_point = float(sale.customer.bonus_point) + float(batch_item_obj.customer_bonus_points.bonus_amount)
+                        else:
+                            sale.customer.bonus_point = float(batch_item_obj.customer_bonus_points.bonus_amount)
+                        sale.customer_bonus_point_amount = float(sale.customer_bonus_point_amount) + float(batch_item_obj.customer_bonus_points.bonus_amount)
+                        sale.customer.save()
+            sale.save()
+            sales_item.batch_item = batch_item_obj
+            sales_item.quantity = item['quantity']
+            sales_item.price_type = item['price_type']
+            sales_item.uom = selling_unit
+            sales_item.mrp = item['current_item_price']
+            sales_item.net_amount = item['net_amount']                
+            sales_item.save()
+            total_tax = float(total_tax) + ( (float(sales_item.net_amount)) - (float(sales_item.mrp)*float(sales_item.quantity)))
+            item_obj = Item.objects.get(id=item['id'])
+            print selling_unit, item_obj.smallest_unit               
+            if item_obj.smallest_unit == selling_unit:
+                print "in same unit"
+                quantity = item['quantity']
+            else:
+                if selling_unit == 'box':
+                    if item_obj.packets_per_box != None:
+                        quantity = float(item['quantity']) * float(item_obj.packets_per_box)
+                        if item_obj.pieces_per_packet != None:
+                            quantity = float(quantity) * float(item_obj.pieces_per_packet)
+                            if item_obj.unit_per_piece != None:
+                                quantity = float(quantity) * float(item_obj.unit_per_piece)
+                        if item_obj.unit_per_packet != None:
+                            quantity = float(quantity) * float(item_obj.unit_per_packet)
+                    if item_obj.pieces_per_box != None:
+                        quantity = float(item['quantity']) * float(item_obj.pieces_per_box)
+                        if item_obj.unit_per_piece != None:
+                            quantity = float(quantity) * float(item_obj.unit_per_piece)
+                if selling_unit == 'packet':
+                    if item_obj.pieces_per_packet != None:
+                        quantity = float(item['quantity']) * float(item_obj.pieces_per_packet)
+                        if item_obj.unit_per_piece != None:
+                            quantity = float(quantity) * float(item_obj.unit_per_piece)
+                    elif item_obj.unit_per_packet != None:
+                            quantity = float(item['quantity']) * float(item_obj.unit_per_packet)
+                if selling_unit == 'piece':
+                    if item_obj.unit_per_piece != None:
+                        quantity = float(item['quantity']) * float(item_obj.unit_per_piece)
+            sales_item.quantity_in_purchase_unit = float(item['quantity_in_purchase_unit']) / float(item['quantity'])
+            sales_item.quantity_in_smallest_unit = float(quantity) / float(item['quantity'])
+            sales_item.save()
+            batch_item_obj.quantity_in_purchase_unit = float(batch_item_obj.quantity_in_purchase_unit) - (float(quantity)*float(sales_item.quantity_in_purchase_unit))         
+            batch_item_obj.quantity_in_smallest_unit = float(batch_item_obj.quantity_in_smallest_unit) - float(quantity)
+            # total_cost_price = float(total_cost_price) + float(item['net_cp'])
+            # total_freight_value = float(total_freight_value) + float(item['net_freight_charge'])
+            sales_item.save()
+            batch_item_obj.save()
+        sale.sales_tax = total_tax
+        sale.save()
+        transaction_1 = Transaction()
+        ledger_entry_debit_customer = LedgerEntry()
+        if sales_details['customer']:
+            customer = Customer.objects.get(id=sales_details['customer'])
+            ledger_entry_debit_customer.ledger = customer.ledger
+        else:
+            parent = Ledger.objects.get(name='Sundry Debtors')
+            counter_sales_ledger, created = Ledger.objects.get_or_create(name="Counter Sales", parent=parent)
+            ledger_entry_debit_customer.ledger = counter_sales_ledger
+        ledger_entry_debit_customer.debit_amount = sale.grant_total
+        ledger_entry_debit_customer.date = sale.sales_invoice_date
+        ledger_entry_debit_customer.transaction_reference_number = sale.transaction_reference_no
+        ledger_entry_debit_customer.save()
+        ledger_entry_credit_sales = LedgerEntry()
+        sales_ledger = Ledger.objects.get(name='Sales')
+        ledger_entry_credit_sales.ledger = sales_ledger
+        if sales_details['tax_exclusive_total'] != '':
             ledger_entry_credit_sales.credit_amount = sales_details['tax_exclusive_total']
             ledger_entry_credit_sales.date = sale.sales_invoice_date
             ledger_entry_credit_sales.transaction_reference_number = sale.transaction_reference_no
             ledger_entry_credit_sales.save()
-            transaction_1.credit_ledger = ledger_entry_credit_sales
-            transaction_1.debit_ledger = ledger_entry_debit_customer
-            transaction_1.transaction_ref = sale.transaction_reference_no
-            transaction_1.debit_amount = ledger_entry_debit_customer.debit_amount
             transaction_1.credit_amount = ledger_entry_credit_sales.credit_amount
+            transaction_1.credit_ledger = ledger_entry_credit_sales
             sales_ledger.balance = float(sales_ledger.balance) - float(ledger_entry_credit_sales.credit_amount)
             sales_ledger.save()
+        transaction_1.debit_ledger = ledger_entry_debit_customer
+        transaction_1.transaction_ref = sale.transaction_reference_no
+        transaction_1.debit_amount = ledger_entry_debit_customer.debit_amount
+        
+        if sales_details['customer']:
+            customer.ledger.balance = float(customer.ledger.balance) + float(ledger_entry_debit_customer.debit_amount)
+            customer.ledger.save()
+        else:
+            counter_sales_ledger.balance = float(counter_sales_ledger.balance) + float(ledger_entry_debit_customer.debit_amount)
+            counter_sales_ledger.save()
+        if sale.payment_mode != 'credit':
+            if sale.payment_mode == 'cash':
+                debit_ledger = Ledger.objects.get(name="Cash")
+            elif sale.payment_mode == 'card' or sale.payment_mode == 'cheque':
+                debit_ledger = Ledger.objects.get(id=sales_details['bank_account_ledger'])
+            ledger_entry_debit_accounts = LedgerEntry()
+            ledger_entry_debit_accounts.ledger = debit_ledger
+            ledger_entry_debit_accounts.debit_amount = sale.grant_total
+            ledger_entry_debit_accounts.date = sale.sales_invoice_date
+            ledger_entry_debit_accounts.transaction_reference_number = sale.transaction_reference_no
+            ledger_entry_debit_accounts.save()
+
+            ledger_entry_credit_customer = LedgerEntry()
             if sales_details['customer']:
-                customer.ledger.balance = float(customer.ledger.balance) + float(ledger_entry_debit_customer.debit_amount)
+                customer = Customer.objects.get(id=sales_details['customer'])
+                ledger_entry_credit_customer.ledger = customer.ledger
+            else:
+                counter_sales_ledger = Ledger.objects.get(name="Counter Sales")
+                ledger_entry_credit_customer.ledger = counter_sales_ledger
+            ledger_entry_credit_customer.credit_amount = sale.grant_total
+            ledger_entry_credit_customer.date = sale.sales_invoice_date
+            ledger_entry_credit_customer.transaction_reference_number = sale.transaction_reference_no
+            ledger_entry_credit_customer.save()
+            debit_ledger.balance = float(debit_ledger.balance) + float(ledger_entry_debit_accounts.debit_amount)
+            debit_ledger.save()
+            if sales_details['customer']:
+                customer.ledger.balance = float(customer.ledger.balance) - float(ledger_entry_credit_customer.credit_amount)
                 customer.ledger.save()
             else:
-                counter_sales_ledger.balance = float(counter_sales_ledger.balance) + float(ledger_entry_debit_customer.debit_amount)
+                counter_sales_ledger.balance = float(counter_sales_ledger.balance) - float(ledger_entry_credit_customer.credit_amount)
                 counter_sales_ledger.save()
-            if sale.payment_mode != 'credit':
-                if sale.payment_mode == 'cash':
-                    debit_ledger = Ledger.objects.get(name="Cash")
-                elif sale.payment_mode == 'card' or sale.payment_mode == 'cheque':
-                    debit_ledger = Ledger.objects.get(id=sales_details['bank_account_ledger'])
-                ledger_entry_debit_accounts = LedgerEntry()
-                ledger_entry_debit_accounts.ledger = debit_ledger
-                ledger_entry_debit_accounts.debit_amount = sale.grant_total
-                ledger_entry_debit_accounts.date = sale.sales_invoice_date
-                ledger_entry_debit_accounts.transaction_reference_number = sale.transaction_reference_no
-                ledger_entry_debit_accounts.save()
-
-                ledger_entry_credit_customer = LedgerEntry()
-                if sales_details['customer']:
-                    customer = Customer.objects.get(id=sales_details['customer'])
-                    ledger_entry_credit_customer.ledger = customer.ledger
-                else:
-                    counter_sales_ledger = Ledger.objects.get(name="Counter Sales")
-                    ledger_entry_credit_customer.ledger = counter_sales_ledger
-                ledger_entry_credit_customer.credit_amount = sale.grant_total
-                ledger_entry_credit_customer.date = sale.sales_invoice_date
-                ledger_entry_credit_customer.transaction_reference_number = sale.transaction_reference_no
-                ledger_entry_credit_customer.save()
-                debit_ledger.balance = float(debit_ledger.balance) + float(ledger_entry_debit_accounts.debit_amount)
-                debit_ledger.save()
-                if sales_details['customer']:
-                    customer.ledger.balance = float(customer.ledger.balance) - float(ledger_entry_credit_customer.credit_amount)
-                    customer.ledger.save()
-                else:
-                    counter_sales_ledger.balance = float(counter_sales_ledger.balance) - float(ledger_entry_credit_customer.credit_amount)
-                    counter_sales_ledger.save()
-                transaction_2 = Transaction()
-                transaction_2.credit_ledger = ledger_entry_credit_customer
-                transaction_2.debit_ledger = ledger_entry_debit_accounts
-                transaction_2.transaction_ref = sale.transaction_reference_no
-                transaction_2.debit_amount = sale.grant_total
-                transaction_2.credit_amount = sale.grant_total
-            if sale.payment_mode != 'credit':
-                sale.paid = sale.grant_total
-            else:
-                sale.balance = sale.grant_total
-            sale.save()
-            transaction_3 = Transaction()
-            credit_stock_ledger = Ledger.objects.get(name="Stock")
-            ledger_entry_credit_stock = LedgerEntry()
-            ledger_entry_credit_stock.ledger = credit_stock_ledger
-            ledger_entry_credit_stock.credit_amount = stock_value_amount
-            ledger_entry_credit_stock.date = sale.sales_invoice_date
-            ledger_entry_credit_stock.transaction_reference_number = sale.transaction_reference_no
-            ledger_entry_credit_stock.save()
-            credit_stock_ledger.balance = float(credit_stock_ledger.balance) - float(ledger_entry_credit_stock.credit_amount)
-            credit_stock_ledger.save()
-            transaction_3.credit_ledger = ledger_entry_credit_stock
-            transaction_3.transaction_ref = sale.transaction_reference_no
-            transaction_3.credit_amount = ledger_entry_credit_stock.credit_amount
-            
-            if sales_details['bill_type'] == 'Invoice':
-                transaction_4 = Transaction()
-                credit_tax_ledger = Ledger.objects.get(name="Output Vat (Sales)")
-                ledger_entry_credit_tax_account = LedgerEntry()
-                ledger_entry_credit_tax_account.ledger = credit_tax_ledger
-                ledger_entry_credit_tax_account.date = sale.sales_invoice_date
-                ledger_entry_credit_tax_account.credit_amount = float(sale.grant_total) - float(sales_details['tax_exclusive_total'])
-                ledger_entry_credit_tax_account.transaction_reference_number = sale.transaction_reference_no
-                ledger_entry_credit_tax_account.save()
-                credit_tax_ledger.balance = float(credit_tax_ledger.balance) - float(ledger_entry_credit_tax_account.credit_amount)
-                credit_tax_ledger.save()
-                transaction_4.credit_ledger = ledger_entry_credit_tax_account
-                transaction_4.credit_amount = ledger_entry_credit_tax_account.credit_amount
-                transaction_4.transaction_ref = sale.transaction_reference_no
-                transaction_4.transaction_date = sale.sales_invoice_date
-                transaction_4.narration = 'By Sales - '+ str(sale.sales_invoice_number)
-                transaction_4.payment_mode = sale.payment_mode
-                if sale.payment_mode != 'credit':
-                    if sale.payment_mode == 'cheque':
-                         transaction_4.bank_name = sale.bank_name
-                         transaction_4.branch = sale.branch
-                    elif sale.payment_mode == 'card':
-                        transaction_4.bank_name = sale.bank_name
-                        transaction_4.card_no = sale.card_number
-                        transaction_4.card_holder_name = sale.card_holder_name
-                transaction_4.save()
-            transaction_1.transaction_date = sale.sales_invoice_date
-            transaction_1.narration = 'By Sales - '+ str(sale.sales_invoice_number)
-            transaction_1.payment_mode = sale.payment_mode
-            if sale.payment_mode != 'credit':
-                transaction_2.transaction_date = sale.sales_invoice_date
-                transaction_2.narration = 'By Sales - '+ str(sale.sales_invoice_number)
-                transaction_2.payment_mode = sale.payment_mode
-            transaction_3.transaction_date = sale.sales_invoice_date
-            transaction_3.narration = 'By Sales - '+ str(sale.sales_invoice_number)
-            transaction_3.payment_mode = sale.payment_mode
-
+            transaction_2 = Transaction()
+            transaction_2.credit_ledger = ledger_entry_credit_customer
+            transaction_2.debit_ledger = ledger_entry_debit_accounts
+            transaction_2.transaction_ref = sale.transaction_reference_no
+            transaction_2.debit_amount = sale.grant_total
+            transaction_2.credit_amount = sale.grant_total
+        if sale.payment_mode != 'credit':
+            sale.paid = sale.grant_total
+        else:
+            sale.balance = sale.grant_total
+        sale.save()
+        transaction_3 = Transaction()
+        credit_stock_ledger = Ledger.objects.get(name="Stock")
+        ledger_entry_credit_stock = LedgerEntry()
+        ledger_entry_credit_stock.ledger = credit_stock_ledger
+        ledger_entry_credit_stock.credit_amount = float(sale.grant_total) - float(sale.sales_tax)
+        ledger_entry_credit_stock.date = sale.sales_invoice_date
+        ledger_entry_credit_stock.transaction_reference_number = sale.transaction_reference_no
+        ledger_entry_credit_stock.save()
+        credit_stock_ledger.balance = float(credit_stock_ledger.balance) - float(ledger_entry_credit_stock.credit_amount)
+        credit_stock_ledger.save()
+        transaction_3.credit_ledger = ledger_entry_credit_stock
+        transaction_3.transaction_ref = sale.transaction_reference_no
+        transaction_3.credit_amount = ledger_entry_credit_stock.credit_amount
+        
+        if sales_details['bill_type'] == 'Invoice':
+            transaction_4 = Transaction()
+            credit_tax_ledger = Ledger.objects.get(name="Output Vat (Sales)")
+            ledger_entry_credit_tax_account = LedgerEntry()
+            ledger_entry_credit_tax_account.ledger = credit_tax_ledger
+            ledger_entry_credit_tax_account.date = sale.sales_invoice_date
+            ledger_entry_credit_tax_account.credit_amount = float(sale.grant_total) - float(sales_details['tax_exclusive_total'])
+            ledger_entry_credit_tax_account.transaction_reference_number = sale.transaction_reference_no
+            ledger_entry_credit_tax_account.save()
+            credit_tax_ledger.balance = float(credit_tax_ledger.balance) - float(ledger_entry_credit_tax_account.credit_amount)
+            credit_tax_ledger.save()
+            transaction_4.credit_ledger = ledger_entry_credit_tax_account
+            transaction_4.credit_amount = ledger_entry_credit_tax_account.credit_amount
+            transaction_4.transaction_ref = sale.transaction_reference_no
+            transaction_4.transaction_date = sale.sales_invoice_date
+            transaction_4.narration = 'By Sales - '+ str(sale.sales_invoice_number)
+            transaction_4.payment_mode = sale.payment_mode
             if sale.payment_mode != 'credit':
                 if sale.payment_mode == 'cheque':
-                    transaction_1.bank_name = sale.bank_name
-                    transaction_2.bank_name = sale.bank_name
-                    transaction_3.bank_name = sale.bank_name
-                    transaction_1.cheque_number = sale.cheque_number
-                    transaction_1.cheque_date = sale.cheque_date
-                    transaction_1.branch = sale.branch
-                    transaction_2.cheque_number = sale.cheque_number
-                    transaction_2.cheque_date = sale.cheque_date
-                    transaction_2.branch = sale.branch
-                    transaction_3.cheque_number = sale.cheque_number
-                    transaction_3.cheque_date = sale.cheque_date
-                    transaction_3.branch = sale.branch
+                     transaction_4.bank_name = sale.bank_name
+                     transaction_4.branch = sale.branch
                 elif sale.payment_mode == 'card':
-                    transaction_1.bank_name = sale.bank_name
-                    transaction_2.bank_name = sale.bank_name
-                    transaction_3.bank_name = sale.bank_name
-                    transaction_1.card_holder_name = sale.card_holder_name
-                    transaction_1.card_no = sale.card_number
-                    transaction_2.card_holder_name = sale.card_holder_name
-                    transaction_2.card_no = sale.card_number
-                    transaction_3.card_holder_name = sale.card_holder_name
-                    transaction_3.card_no = sale.card_number
-                transaction_2.save()
-            transaction_1.save()
-            transaction_3.save()
-            
-            try:
-                stock_value = StockValue.objects.latest('id')
-            except Exception as ex:
-                stock_value = StockValue()
-            if stock_value.stock_by_value is not None:
-                stock_value.stock_by_value = float(stock_value.stock_by_value) - float(total_cost_price)
-            else:
-                stock_value.stock_by_value = 0 - float(total_cost_price)
-            stock_value.save()
-            try:
-                freight = FreightValue.objects.latest('id')
-            except:
-                freight = FreightValue()
-            if freight.freight_value is not None:
-                freight.freight_value = float(freight.freight_value) - float(total_freight_value)
-            else:
-                freight.freight_value = 0 - float(total_freight_value)
-            freight.save()
+                    transaction_4.bank_name = sale.bank_name
+                    transaction_4.card_no = sale.card_number
+                    transaction_4.card_holder_name = sale.card_holder_name
+            transaction_4.save()
+        transaction_1.transaction_date = sale.sales_invoice_date
+        transaction_1.narration = 'By Sales - '+ str(sale.sales_invoice_number)
+        transaction_1.payment_mode = sale.payment_mode
+        if sale.payment_mode != 'credit':
+            transaction_2.transaction_date = sale.sales_invoice_date
+            transaction_2.narration = 'By Sales - '+ str(sale.sales_invoice_number)
+            transaction_2.payment_mode = sale.payment_mode
+        transaction_3.transaction_date = sale.sales_invoice_date
+        transaction_3.narration = 'By Sales - '+ str(sale.sales_invoice_number)
+        transaction_3.payment_mode = sale.payment_mode
+
+        if sale.payment_mode != 'credit':
             if sale.payment_mode == 'cheque':
-                post_dated_cheque = PostDatedCheque()
-                type_name = 'sales'
-                post_dated_cheque_obj = post_dated_cheque.set_attributes(type_name,sale)
-                deleted = delete_post_dated_cheque_entries()
-            res = {
-                'result': 'ok',
-                'message': 'Transaction saved',
-                'transaction_reference_no': sale.transaction_reference_no,
-            }
+                transaction_1.bank_name = sale.bank_name
+                transaction_2.bank_name = sale.bank_name
+                transaction_3.bank_name = sale.bank_name
+                transaction_1.cheque_number = sale.cheque_number
+                transaction_1.cheque_date = sale.cheque_date
+                transaction_1.branch = sale.branch
+                transaction_2.cheque_number = sale.cheque_number
+                transaction_2.cheque_date = sale.cheque_date
+                transaction_2.branch = sale.branch
+                transaction_3.cheque_number = sale.cheque_number
+                transaction_3.cheque_date = sale.cheque_date
+                transaction_3.branch = sale.branch
+            elif sale.payment_mode == 'card':
+                transaction_1.bank_name = sale.bank_name
+                transaction_2.bank_name = sale.bank_name
+                transaction_3.bank_name = sale.bank_name
+                transaction_1.card_holder_name = sale.card_holder_name
+                transaction_1.card_no = sale.card_number
+                transaction_2.card_holder_name = sale.card_holder_name
+                transaction_2.card_no = sale.card_number
+                transaction_3.card_holder_name = sale.card_holder_name
+                transaction_3.card_no = sale.card_number
+            transaction_2.save()
+        transaction_1.save()
+        transaction_3.save()
+        
+        try:
+            stock_value = StockValue.objects.latest('id')
         except Exception as ex:
-            print str(ex)
-            res = {
-                'result': 'error',
-                'message': 'Transaction failed'+ str(ex)
-            }
+            stock_value = StockValue()
+        if stock_value.stock_by_value is not None:
+            stock_value.stock_by_value = float(stock_value.stock_by_value) - float(total_cost_price)
+        else:
+            stock_value.stock_by_value = 0 - float(total_cost_price)
+        stock_value.save()
+        try:
+            freight = FreightValue.objects.latest('id')
+        except:
+            freight = FreightValue()
+        if freight.freight_value is not None:
+            freight.freight_value = float(freight.freight_value) - float(total_freight_value)
+        else:
+            freight.freight_value = 0 - float(total_freight_value)
+        freight.save()
+        if sale.payment_mode == 'cheque':
+            post_dated_cheque = PostDatedCheque()
+            type_name = 'sales'
+            post_dated_cheque_obj = post_dated_cheque.set_attributes(type_name,sale)
+            deleted = delete_post_dated_cheque_entries()
+        res = {
+            'result': 'ok',
+            'message': 'Transaction saved',
+            'transaction_reference_no': sale.transaction_reference_no,
+        }
+        # except Exception as ex:
+        #     print str(ex)
+        #     res = {
+        #         'result': 'error',
+        #         'message': 'Transaction failed'
+        #     }
         response = simplejson.dumps(res)
         return HttpResponse(response, status=200, mimetype='application/json')
+        
+
+        # sales_details = ast.literal_eval(request.POST['sales_details']) 
+        # try:
+        #     sale = Sale()  
+        #     sale.created_by =  request.user  
+        #     sale.customer_tin = sales_details['customer_tin']
+        #     sale.owner_tin = sales_details['owner_tin']
+        #     sale.sales_invoice_date = datetime.strptime(sales_details['invoice_date'], '%d/%m/%Y')
+        #     if sales_details['do_no']:
+        #         sale.do_number = sales_details['do_no']
+        #     sale.bill_type  = sales_details['bill_type']
+        #     try:
+        #         transaction_reference_no = Sale.objects.latest('id').id
+        #         if sales_details['bill_type'] == 'Receipt':
+        #             sale.transaction_reference_no = 'SREC'+str(transaction_reference_no+1)
+        #         else:
+        #             sale.transaction_reference_no = 'SINV'+str(transaction_reference_no+1)
+        #     except:
+        #         transaction_reference_no = '1'
+        #         if sales_details['bill_type'] == 'Receipt':
+        #             sale.transaction_reference_no = 'SREC'+str(transaction_reference_no)
+        #         else:
+        #             sale.transaction_reference_no = 'SINV'+str(transaction_reference_no)
+        #     sale.payment_mode = sales_details['payment_mode']
+        #     if sales_details['payment_mode'] == 'cheque':
+        #         sale.bank_name = sales_details['bank_name']
+        #         sale.branch = sales_details['branch']
+        #         sale.cheque_number = sales_details['cheque_no']
+        #         sale.cheque_date = datetime.strptime(sales_details['cheque_date'], '%d/%m/%Y')
+        #     elif sales_details['payment_mode'] == 'card':
+        #         sale.bank_name = sales_details['bank_name']
+        #         sale.card_holder_name = sales_details['card_holder_name']
+        #         sale.card_number = sales_details['card_no']
+        #     if sales_details['salesman']:
+        #         salesman = Salesman.objects.get(id=sales_details['salesman'])
+        #         sale.salesman = salesman
+        #     if sales_details['customer']:
+        #         customer = Customer.objects.get(id=sales_details['customer'])
+        #         sale.customer = customer
+        #     if sales_details['discount'] !='':
+        #         sale.discount = sales_details['discount']
+        #     if sales_details['round_off'] != '':
+        #         sale.round_off = sales_details['round_off']
+        #     sale.grant_total = sales_details['grant_total']
+        #     if sales_details['cess'] != '':
+        #         sale.cess = sales_details['cess']
+        #     sales_items = sales_details['items']            
+        #     sale.save()
+        #     if sales_details['deliverynote_id']:
+        #         deliverynote = DeliveryNote.objects.get(id=sales_details['deliverynote_id'])
+        #         sale.deliverynote = deliverynote
+        #         deliverynote.is_converted = True
+        #         deliverynote.save()
+        #     if sales_details['invoice_no']:
+        #         sale.sales_invoice_number = sales_details['invoice_no']
+            
+        #     try:
+        #         serial_no_bill = SerialNoBill.objects.latest('id') 
+        #     except:
+        #         serial_no_bill = None
+        #     try:
+        #         serial_no_invoice = SerialNoInvoice.objects.latest('id') 
+        #     except:
+        #         serial_no_invoice = None
+        #     if serial_no_bill and sales_details['bill_type']=='Receipt':
+        #         if serial_no_bill.is_auto_generated:
+        #             receipt = Receipt()
+        #             receipt.sales = sale
+        #             try:
+        #                 receipt_no  = Receipt.objects.latest('id').receipt_no
+        #                 receipt.receipt_no = "RCPT-" + str(int(receipt_no.split('-')[1]) + 1)
+        #                 sale.sales_invoice_number = receipt.receipt_no
+        #             except Exception as ex:
+        #                 receipt_no = 1
+        #                 receipt.receipt_no = "RCPT-" + str(receipt_no)
+        #                 sale.sales_invoice_number = receipt.receipt_no
+        #             receipt.save()
+        #         else:
+        #             receipt = Receipt()
+        #             receipt.sales = sale
+        #             try:
+        #                 receipt_no  = Receipt.objects.latest('id').receipt_no
+        #                 receipt.receipt_no = serial_no_bill.prefix+ str(int(receipt_no.split('-')[1]) + 1)
+        #                 sale.sales_invoice_number = receipt.receipt_no
+        #             except Exception as ex:
+        #                 receipt.receipt_no = serial_no_bill.prefix + str(int(serial_no_bill.starting_no) + 1)
+        #                 sale.sales_invoice_number = receipt.receipt_no
+        #             receipt.save()
+        #     elif sales_details['bill_type'] == 'Receipt':
+        #         receipt = Receipt()
+        #         receipt.sales = sale
+        #         try:
+        #             receipt_no  = Receipt.objects.latest('id').receipt_no
+        #             receipt.receipt_no = "RCPT-" + str(int(receipt_no.split('-')[1]) + 1)
+        #             sale.sales_invoice_number = receipt.receipt_no
+        #         except Exception as ex:
+        #             receipt_no = 1
+        #             receipt.receipt_no = "RCPT-" + str(receipt_no)
+        #             sale.sales_invoice_number = receipt.receipt_no
+        #         receipt.save()
+        #     if serial_no_invoice and sales_details['bill_type']=='Invoice':
+        #         if serial_no_invoice.is_auto_generated:    
+        #             invoice = Invoice()
+        #             invoice.sales = sale
+        #             try:
+        #                 invoice_no  = Invoice.objects.latest('id').invoice_no
+        #                 invoice.invoice_no = "INVC-" + str(int(invoice_no.split('-')[1]) + 1)
+        #                 sale.sales_invoice_number = invoice.invoice_no
+        #             except Exception as ex:
+        #                 invoice_no = 1
+        #                 invoice.invoice_no = "INVC-" + str(invoice_no)
+        #                 sale.sales_invoice_number = invoice.invoice_no
+        #             invoice.invoice_type = "Tax Inclusive"
+        #             invoice.save()
+        #         else:
+        #             invoice = Invoice()
+        #             invoice.sales = sale
+        #             try:
+        #                 invoice_no  = Invoice.objects.latest('id').invoice_no
+        #                 invoice.invoice_no = serial_no_invoice.prefix+ str(int(invoice_no.split('-')[1]) + 1)
+        #                 sale.sales_invoice_number = invoice.invoice_no
+        #             except Exception as ex:
+        #                 invoice.invoice_no = serial_no_invoice.prefix + str(int(serial_no_invoice.starting_no) + 1)
+        #                 sale.sales_invoice_number = invoice.invoice_no
+        #             invoice.invoice_type = "Tax Inclusive"
+        #             invoice.save()
+        #     elif sales_details['bill_type'] == 'Invoice':
+        #         invoice = Invoice()
+        #         invoice.sales = sale
+        #         try:
+        #             invoice_no  = Invoice.objects.latest('id').invoice_no
+        #             invoice.invoice_no = "INVC-" + str(int(invoice_no.split('-')[1]) + 1)
+        #             sale.sales_invoice_number = invoice.invoice_no
+        #         except Exception as ex:
+        #             invoice_no = 1
+        #             invoice.invoice_no = "INVC-" + str(invoice_no)
+        #             sale.sales_invoice_number = invoice.invoice_no
+        #         invoice.invoice_type = "Tax Inclusive"
+        #         invoice.save()
+        #     sale.save()
+        #     total_tax = 0
+        #     total_cost_price = 0
+        #     total_freight_value = 0
+        #     total_purchase_price = 0
+        #     stock_value_amount = 0
+        #     for item in sales_items:
+        #         print "item", item
+        #         uom =  item['uom']
+        #         selling_unit = item['uom']
+        #         sales_item = SalesItem()
+        #         sales_item.sales = sale
+        #         batch_item_obj = BatchItem.objects.get(batch__id=item['batch_id'],item__id=item['id'])
+        #         if sale.salesman and batch_item_obj.salesman_bonus_quantity:
+        #             if float(item['quantity']) >= float(batch_item_obj.salesman_bonus_quantity):
+        #                 if batch_item_obj.salesman_bonus_points:
+        #                     if sale.salesman.bonus_point:
+        #                         sale.salesman.bonus_point = float(sale.salesman.bonus_point) + float(batch_item_obj.salesman_bonus_points.bonus_amount)
+        #                     else:
+        #                         sale.salesman.bonus_point = float(batch_item_obj.salesman_bonus_points.bonus_amount)
+        #                     sale.salesman_bonus_point_amount = float(sale.salesman_bonus_point_amount) + float(batch_item_obj.salesman_bonus_points.bonus_amount)
+        #                     sale.salesman.save()
+        #         if sale.customer and batch_item_obj.customer_bonus_quantity:
+        #             if float(item['quantity']) >= float(batch_item_obj.customer_bonus_quantity):
+        #                 if batch_item_obj.customer_bonus_points:
+        #                     if sale.customer.bonus_point:
+        #                         sale.customer.bonus_point = float(sale.customer.bonus_point) + float(batch_item_obj.customer_bonus_points.bonus_amount)
+        #                     else:
+        #                         sale.customer.bonus_point = float(batch_item_obj.customer_bonus_points.bonus_amount)
+        #                     sale.customer_bonus_point_amount = float(sale.customer_bonus_point_amount) + float(batch_item_obj.customer_bonus_points.bonus_amount)
+        #                     sale.customer.save()
+        #         sale.save()
+        #         sales_item.batch_item = batch_item_obj
+        #         sales_item.quantity = item['quantity']
+        #         sales_item.price_type = item['price_type']
+        #         sales_item.uom = selling_unit
+        #         sales_item.mrp = item['mrp']
+        #         sales_item.net_amount = item['net_amount']                
+        #         sales_item.save()
+        #         total_tax = float(total_tax) + ( (float(sales_item.net_amount)) - (float(sales_item.mrp)*float(sales_item.quantity)))
+        #         item_obj = Item.objects.get(id=item['id'])                
+        #         if item_obj.smallest_unit == selling_unit:
+        #             quantity = item['quantity']
+        #         else:
+        #             if selling_unit == 'box':
+        #                 if item_obj.packets_per_box != None:
+        #                     quantity = float(item['quantity']) * float(item_obj.packets_per_box)
+        #                     if item_obj.pieces_per_packet != None:
+        #                         quantity = float(quantity) * float(item_obj.pieces_per_packet)
+        #                         if item_obj.unit_per_piece != None:
+        #                             quantity = float(quantity) * float(item_obj.unit_per_piece)
+        #                     if item_obj.unit_per_packet != None:
+        #                         quantity = float(quantity) * float(item_obj.unit_per_packet)
+        #                 if item_obj.pieces_per_box != None:
+        #                     quantity = float(item['quantity']) * float(item_obj.pieces_per_box)
+        #                     if item_obj.unit_per_piece != None:
+        #                         quantity = float(quantity) * float(item_obj.unit_per_piece)
+        #             if selling_unit == 'packet':
+        #                 if item_obj.pieces_per_packet != None:
+        #                     quantity = float(item['quantity']) * float(item_obj.pieces_per_packet)
+        #                     if item_obj.unit_per_piece != None:
+        #                         quantity = float(quantity) * float(item_obj.unit_per_piece)
+        #                 elif item_obj.unit_per_packet != None:
+        #                         quantity = float(item['quantity']) * float(item_obj.unit_per_packet)
+        #             if selling_unit == 'piece':
+        #                 if item_obj.unit_per_piece != None:
+        #                     quantity = float(item['quantity']) * float(item_obj.unit_per_piece)
+        #         sales_item.quantity_in_purchase_unit = float(item['quantity_in_purchase_unit']) / float(item['quantity'])
+        #         sales_item.quantity_in_smallest_unit = float(quantity) / float(item['quantity'])
+        #         sales_item.save()
+        #         batch_item_obj.quantity_in_purchase_unit = float(batch_item_obj.quantity_in_purchase_unit) - float(quantity)           
+        #         batch_item_obj.quantity_in_smallest_unit = float(batch_item_obj.quantity_in_smallest_unit) - float(quantity)
+        #         # total_cost_price = float(total_cost_price) + float(item['net_cp'])
+        #         # total_freight_value = float(total_freight_value) + float(item['net_freight_charge'])
+        #         sales_item.save()
+        #         batch_item_obj.save()
+        #     sale.sales_tax = total_tax
+        #     sale.save()
+        #     transaction_1 = Transaction()
+        #     ledger_entry_debit_customer = LedgerEntry()
+        #     if sales_details['customer']:
+        #         customer = Customer.objects.get(id=sales_details['customer'])
+        #         ledger_entry_debit_customer.ledger = customer.ledger
+        #     else:
+        #         parent = Ledger.objects.get(name='Sundry Debtors')
+        #         counter_sales_ledger, created = Ledger.objects.get_or_create(name="Counter Sales", parent=parent)
+        #         ledger_entry_debit_customer.ledger = counter_sales_ledger
+        #     ledger_entry_debit_customer.debit_amount = sale.grant_total
+        #     ledger_entry_debit_customer.date = sale.sales_invoice_date
+        #     ledger_entry_debit_customer.transaction_reference_number = sale.transaction_reference_no
+        #     ledger_entry_debit_customer.save()
+        #     ledger_entry_credit_sales = LedgerEntry()
+        #     sales_ledger = Ledger.objects.get(name='Sales')
+        #     ledger_entry_credit_sales.ledger = sales_ledger
+        #     ledger_entry_credit_sales.credit_amount = sales_details['tax_exclusive_total']
+        #     ledger_entry_credit_sales.date = sale.sales_invoice_date
+        #     ledger_entry_credit_sales.transaction_reference_number = sale.transaction_reference_no
+        #     ledger_entry_credit_sales.save()
+        #     transaction_1.credit_ledger = ledger_entry_credit_sales
+        #     transaction_1.debit_ledger = ledger_entry_debit_customer
+        #     transaction_1.transaction_ref = sale.transaction_reference_no
+        #     transaction_1.debit_amount = ledger_entry_debit_customer.debit_amount
+        #     transaction_1.credit_amount = ledger_entry_credit_sales.credit_amount
+        #     sales_ledger.balance = float(sales_ledger.balance) - float(ledger_entry_credit_sales.credit_amount)
+        #     sales_ledger.save()
+        #     if sales_details['customer']:
+        #         customer.ledger.balance = float(customer.ledger.balance) + float(ledger_entry_debit_customer.debit_amount)
+        #         customer.ledger.save()
+        #     else:
+        #         counter_sales_ledger.balance = float(counter_sales_ledger.balance) + float(ledger_entry_debit_customer.debit_amount)
+        #         counter_sales_ledger.save()
+        #     if sale.payment_mode != 'credit':
+        #         if sale.payment_mode == 'cash':
+        #             debit_ledger = Ledger.objects.get(name="Cash")
+        #         elif sale.payment_mode == 'card' or sale.payment_mode == 'cheque':
+        #             debit_ledger = Ledger.objects.get(id=sales_details['bank_account_ledger'])
+        #         ledger_entry_debit_accounts = LedgerEntry()
+        #         ledger_entry_debit_accounts.ledger = debit_ledger
+        #         ledger_entry_debit_accounts.debit_amount = sale.grant_total
+        #         ledger_entry_debit_accounts.date = sale.sales_invoice_date
+        #         ledger_entry_debit_accounts.transaction_reference_number = sale.transaction_reference_no
+        #         ledger_entry_debit_accounts.save()
+
+        #         ledger_entry_credit_customer = LedgerEntry()
+        #         if sales_details['customer']:
+        #             customer = Customer.objects.get(id=sales_details['customer'])
+        #             ledger_entry_credit_customer.ledger = customer.ledger
+        #         else:
+        #             counter_sales_ledger = Ledger.objects.get(name="Counter Sales")
+        #             ledger_entry_credit_customer.ledger = counter_sales_ledger
+        #         ledger_entry_credit_customer.credit_amount = sale.grant_total
+        #         ledger_entry_credit_customer.date = sale.sales_invoice_date
+        #         ledger_entry_credit_customer.transaction_reference_number = sale.transaction_reference_no
+        #         ledger_entry_credit_customer.save()
+        #         debit_ledger.balance = float(debit_ledger.balance) + float(ledger_entry_debit_accounts.debit_amount)
+        #         debit_ledger.save()
+        #         if sales_details['customer']:
+        #             customer.ledger.balance = float(customer.ledger.balance) - float(ledger_entry_credit_customer.credit_amount)
+        #             customer.ledger.save()
+        #         else:
+        #             counter_sales_ledger.balance = float(counter_sales_ledger.balance) - float(ledger_entry_credit_customer.credit_amount)
+        #             counter_sales_ledger.save()
+        #         transaction_2 = Transaction()
+        #         transaction_2.credit_ledger = ledger_entry_credit_customer
+        #         transaction_2.debit_ledger = ledger_entry_debit_accounts
+        #         transaction_2.transaction_ref = sale.transaction_reference_no
+        #         transaction_2.debit_amount = sale.grant_total
+        #         transaction_2.credit_amount = sale.grant_total
+        #     if sale.payment_mode != 'credit':
+        #         sale.paid = sale.grant_total
+        #     else:
+        #         sale.balance = sale.grant_total
+        #     sale.save()
+        #     transaction_3 = Transaction()
+        #     credit_stock_ledger = Ledger.objects.get(name="Stock")
+        #     ledger_entry_credit_stock = LedgerEntry()
+        #     ledger_entry_credit_stock.ledger = credit_stock_ledger
+        #     ledger_entry_credit_stock.credit_amount = stock_value_amount
+        #     ledger_entry_credit_stock.date = sale.sales_invoice_date
+        #     ledger_entry_credit_stock.transaction_reference_number = sale.transaction_reference_no
+        #     ledger_entry_credit_stock.save()
+        #     credit_stock_ledger.balance = float(credit_stock_ledger.balance) - float(ledger_entry_credit_stock.credit_amount)
+        #     credit_stock_ledger.save()
+        #     transaction_3.credit_ledger = ledger_entry_credit_stock
+        #     transaction_3.transaction_ref = sale.transaction_reference_no
+        #     transaction_3.credit_amount = ledger_entry_credit_stock.credit_amount
+            
+        #     if sales_details['bill_type'] == 'Invoice':
+        #         transaction_4 = Transaction()
+        #         credit_tax_ledger = Ledger.objects.get(name="Output Vat (Sales)")
+        #         ledger_entry_credit_tax_account = LedgerEntry()
+        #         ledger_entry_credit_tax_account.ledger = credit_tax_ledger
+        #         ledger_entry_credit_tax_account.date = sale.sales_invoice_date
+        #         ledger_entry_credit_tax_account.credit_amount = float(sale.grant_total) - float(sales_details['tax_exclusive_total'])
+        #         ledger_entry_credit_tax_account.transaction_reference_number = sale.transaction_reference_no
+        #         ledger_entry_credit_tax_account.save()
+        #         credit_tax_ledger.balance = float(credit_tax_ledger.balance) - float(ledger_entry_credit_tax_account.credit_amount)
+        #         credit_tax_ledger.save()
+        #         transaction_4.credit_ledger = ledger_entry_credit_tax_account
+        #         transaction_4.credit_amount = ledger_entry_credit_tax_account.credit_amount
+        #         transaction_4.transaction_ref = sale.transaction_reference_no
+        #         transaction_4.transaction_date = sale.sales_invoice_date
+        #         transaction_4.narration = 'By Sales - '+ str(sale.sales_invoice_number)
+        #         transaction_4.payment_mode = sale.payment_mode
+        #         if sale.payment_mode != 'credit':
+        #             if sale.payment_mode == 'cheque':
+        #                  transaction_4.bank_name = sale.bank_name
+        #                  transaction_4.branch = sale.branch
+        #             elif sale.payment_mode == 'card':
+        #                 transaction_4.bank_name = sale.bank_name
+        #                 transaction_4.card_no = sale.card_number
+        #                 transaction_4.card_holder_name = sale.card_holder_name
+        #         transaction_4.save()
+        #     transaction_1.transaction_date = sale.sales_invoice_date
+        #     transaction_1.narration = 'By Sales - '+ str(sale.sales_invoice_number)
+        #     transaction_1.payment_mode = sale.payment_mode
+        #     if sale.payment_mode != 'credit':
+        #         transaction_2.transaction_date = sale.sales_invoice_date
+        #         transaction_2.narration = 'By Sales - '+ str(sale.sales_invoice_number)
+        #         transaction_2.payment_mode = sale.payment_mode
+        #     transaction_3.transaction_date = sale.sales_invoice_date
+        #     transaction_3.narration = 'By Sales - '+ str(sale.sales_invoice_number)
+        #     transaction_3.payment_mode = sale.payment_mode
+
+        #     if sale.payment_mode != 'credit':
+        #         if sale.payment_mode == 'cheque':
+        #             transaction_1.bank_name = sale.bank_name
+        #             transaction_2.bank_name = sale.bank_name
+        #             transaction_3.bank_name = sale.bank_name
+        #             transaction_1.cheque_number = sale.cheque_number
+        #             transaction_1.cheque_date = sale.cheque_date
+        #             transaction_1.branch = sale.branch
+        #             transaction_2.cheque_number = sale.cheque_number
+        #             transaction_2.cheque_date = sale.cheque_date
+        #             transaction_2.branch = sale.branch
+        #             transaction_3.cheque_number = sale.cheque_number
+        #             transaction_3.cheque_date = sale.cheque_date
+        #             transaction_3.branch = sale.branch
+        #         elif sale.payment_mode == 'card':
+        #             transaction_1.bank_name = sale.bank_name
+        #             transaction_2.bank_name = sale.bank_name
+        #             transaction_3.bank_name = sale.bank_name
+        #             transaction_1.card_holder_name = sale.card_holder_name
+        #             transaction_1.card_no = sale.card_number
+        #             transaction_2.card_holder_name = sale.card_holder_name
+        #             transaction_2.card_no = sale.card_number
+        #             transaction_3.card_holder_name = sale.card_holder_name
+        #             transaction_3.card_no = sale.card_number
+        #         transaction_2.save()
+        #     transaction_1.save()
+        #     transaction_3.save()
+            
+        #     try:
+        #         stock_value = StockValue.objects.latest('id')
+        #     except Exception as ex:
+        #         stock_value = StockValue()
+        #     if stock_value.stock_by_value is not None:
+        #         stock_value.stock_by_value = float(stock_value.stock_by_value) - float(total_cost_price)
+        #     else:
+        #         stock_value.stock_by_value = 0 - float(total_cost_price)
+        #     stock_value.save()
+        #     try:
+        #         freight = FreightValue.objects.latest('id')
+        #     except:
+        #         freight = FreightValue()
+        #     if freight.freight_value is not None:
+        #         freight.freight_value = float(freight.freight_value) - float(total_freight_value)
+        #     else:
+        #         freight.freight_value = 0 - float(total_freight_value)
+        #     freight.save()
+        #     if sale.payment_mode == 'cheque':
+        #         post_dated_cheque = PostDatedCheque()
+        #         type_name = 'sales'
+        #         post_dated_cheque_obj = post_dated_cheque.set_attributes(type_name,sale)
+        #         deleted = delete_post_dated_cheque_entries()
+        #     res = {
+        #         'result': 'ok',
+        #         'message': 'Transaction saved',
+        #         'transaction_reference_no': sale.transaction_reference_no,
+        #     }
+        # except Exception as ex:
+        #     print str(ex)
+        #     res = {
+        #         'result': 'error',
+        #         'message': 'Transaction failed'+ str(ex)
+        #     }
+        # response = simplejson.dumps(res)
+        # return HttpResponse(response, status=200, mimetype='application/json')
 class SalesView(View):
 
     def get(self, request, *args, **kwargs):

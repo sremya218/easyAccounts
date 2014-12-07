@@ -118,6 +118,7 @@ class DeliverynoteItem(models.Model):
             'net_amount': self.net_amount,
             'tax': self.batch_item.item.vat_type.tax_percentage if self.batch_item.item.vat_type else '',
             'mrp': self.mrp,
+            'current_item_price': self.mrp,
             'type': self.batch_item.item.item_type,
             'price_type' : self.price_type,
             'quantity': self.quantity,

@@ -540,7 +540,7 @@ class OpeningBalance(View):
             opening_balance_ledger_entry.credit_amount = abs(float(opening_balance_details['amount']))
         else:
             opening_balance_ledger_entry.debit_amount = opening_balance_details['amount']
-        opening_balance_ledger_entry.date = datetime.now()
+        opening_balance_ledger_entry.date = datetime.strptime(opening_balance_details.get('date', ''), '%d/%m/%Y')
         opening_balance_ledger_entry.save()
         opening_balance_ledger_entry.ledger.balance = float(opening_balance_ledger_entry.ledger.balance) + float(opening_balance_details['amount'])
         opening_balance_ledger_entry.ledger.save()

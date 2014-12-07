@@ -7,7 +7,6 @@
 		<li class="horizontal_menu_active"> <a href="{% url 'categories' %}"> Categories </a></li>
 		<li> <a href="{% url 'products' %}"> Products </a></li>
 		<li> <a href="{% url 'brands' %}"> Brands </a></li>
-		<li> <a href="{% url 'vat' %}"> Vat Type </a></li>
 		<li> <a href="{% url 'items' %}"> Items </a></li>
 		<li> <a href="{% url 'batches' %}"> Batches </a></li>
 		<li> <a href="{% url 'opening_stock' %}"> Opening Stock </a></li>
@@ -16,45 +15,20 @@
 {% block submenu_container%}
 {% endblock submenu_container%}
 {% block extrahead %}
-<!-- 
-	<script type="text/ng-template" id="category_renderer.html">			
-		<a href="" class="shrink closed" ng-click="toggle_category_view($event, category)" >
-			<span>
-				<img src="/static/images/tree_closed.svg" class="closed-icon" />
-        		<img src="/static/images/tree_open.svg" class="open-icon" />
-				[[category.name]]
-			</span>
-		</a>
-        <a href="" ng-click="add_subcategory(category)" class="new_button"> 
-        	<img src="/static/images/treeview_plus.svg" width="18" /> 
-        </a>   
-        <a href="" ng-click="edit_subcategory(category)" class="edit_button"> 
-        	<img src="/static/images/treeview_edit.svg" width="18" />
-        </a> 
-        <a href="" ng-click="delete_category(category, categories)" class=""> X </a>       
-        <ul>
-        	<li ng-repeat="category in category.subcategories" class="child" ng-include = "'category_renderer.html'" >
-        	 </li>
-    	</ul>
-  		
-	</script>
-
- -->
  	<script type="text/ng-template" id="category_renderer.html">		
         <a href="" class="shrink closed" ng-click="toggle_category_view($event, category)" >
         	<span>
-        		<img src="/static/images/tree_closed.svg" class="closed-icon" />
-        		<img src="/static/images/tree_open.svg" class="open-icon" />
+        		<i class="closed-icon fa fa-plus-circle"></i>
+				<i class="open-icon fa fa-minus-circle"></i>
         		[[category.name]]
         	</span>
         </a>        
         <a ng-click="add_subcategory(category)" class="new_button">
-        	<img src="/static/images/treeview_plus.svg" width="18" />  
+        	<i class="fa fa-plus"></i>
         </a>
         <a ng-click="edit_subcategory(category)" class="edit_button"> 
-        	<img src="/static/images/treeview_edit.svg" width="18" />
+        	<i class="fa fa-edit"></i>
         </a>
-        <a href="" ng-click="delete_category(category, categories)" class=""> X </a>  
         <ul>
         	<li ng-repeat="category in category.subcategories" class="child" ng-include = "'category_renderer.html'" >
         	 </li>
@@ -66,7 +40,7 @@
 	
 	<div class="tree_view col-md-4 col-sm-4">
 		<div class="tree_header white_bg">
-			<a href="" ng-click="add_subcategory()"class="create_new"> </a>
+			<a href="" ng-click="add_subcategory()"class="create_new"><i class="fa fa-plus"></i> </a>
 		</div>
 		<div class="white_bg min-height">			
 		    <ul>
@@ -78,6 +52,11 @@
 		<div class="tree_header white_bg no-border">
 		</div>
 		<div class="new_ledger min-height" ng-show="is_new_category">
+			
+			<div class="control">
+				<label>Name</label>
+				<input type="text" ng-model="category.name"/>
+			</div>
 			<div class="control">
 				<label>Parent : </label>
 				<input type="text" ng-model="category.parent_name" ng-show="category.parent_name" ng-readonly="category.parent_name"/>
@@ -91,11 +70,6 @@
 				</div>
 				<p class="error_msg">[[no_categories_msg]]</p>
 			</div>
-			<div class="control">
-				<label>Name</label>
-				<input type="text" ng-model="category.name"/>
-			</div>
-			
 			
 			<div class="button_control">
 				<p class="error_msg">[[validate_category_error_msg]]</p><br/>

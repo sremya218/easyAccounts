@@ -189,9 +189,10 @@
 					</td>
 					<td>
 						<!-- [[item.current_item_price]] -->
-						<input ng-show="item.type=='Stockable'" type="text" ng-model="item.mrp" ng-change="calculate_amount(item)">
+						<input ng-show="item.type=='Stockable'" type="text" ng-model="item.current_item_price" ng-change="calculate_amount(item)">
 						<input type="text" ng-model="item.mrp" ng-change="calculate_amount(item)" ng-show="item.type=='Non Stockable' || item.type=='Services'"/>
 					</td>
+					
 					<td ng-show="sales.bill_type == 'Invoice'">[[item.tax]]<span ng-show="item.tax > 0">%</span></td>
 					<td>[[item.net_amount | number:2]]</td>
 					<td><a href="" ng-click="remove_item(item)">X</a></td>

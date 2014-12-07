@@ -355,7 +355,7 @@ class BatchItem(models.Model):
             'batch_name': self.batch.name,
             'wholesale_profit': self.whole_sale_profit_percentage,
             'retail_profit': self.retail_profit_percentage,
-            'wholesale_price': self.whole_sale_price,
+            'wholesale_price': self.whole_sale_price,            
             'retail_price': self.retail_price,
             'branch_price': self.branch_price,
             'customer_card_price': self.customer_card_price,
