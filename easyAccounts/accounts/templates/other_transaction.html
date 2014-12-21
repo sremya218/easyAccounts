@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block body_id %}accounts{% endblock %}
+{% block title %} Other Transactions {% endblock title%}
+{% block controller %} ng-controller="TransactionController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'chart_of_accounts' %}" class="no-border"> Chart Of Accounts </a></li>
+		<li class="horizontal_menu_active"><a href="{% url 'other_transactions' %}">Other Transactions</a></li>
+		<li><a href="{% url 'contra_transactions' %}">Contra Transactions</a></li>
+		<li><a href="{% url 'payments' %}">Payments</a></li>
+		<li><a href="{% url 'opening_balance' %}">Opening Balance</a></li>
+		<li><a href="{% url 'edit_transactions' %}">Edit Transactions</a></li>
+		<li><a href="{% url 'receipts' %}">Receipts</a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}    
+{% block dialogue_popup %}   
+    {% include 'show_transaction_details.html' %} 
+    {% include 'add_ledger.html' %}      
+{% endblock %}
+{% block extrahead %}
+     <script>
+        $(function() {
+        $( "#transaction_date" ).datepicker();
+        });
+    </script>
+{% endblock %}
+{% block content %}
+	<h2> Make Transaction </h2>
+	
+	<div class="col-md-6 col-sm=6">
+	<div class="other_transactions row">
+		<form>
+			
+			<div class="control">
+				
+				<label>Date</label>
+				<input type="text" name="transaction_date" id="transaction_date" ng-model="transaction.transaction_date" value="transaction_date">
+			</div>
+			
+			<div class="control">
+				<label>Amount</label>
+				<input type="text" name="transaction_amount" ng-model="transaction.amount">
+			</div>
+			<div class="control">
+				<label>Debit Ledger</label><a href="" ng-click="create_ledger('debit_ledger')">New Ledger</a>
+				<input type="text" name="transaction_debit_ledger" ng-model="debit_ledger_name" ng-change="get_ledgers('debit_ledger')" autocomplete="off">
+				<div class="search_list_container">
+					<div ng-show="debit_ledgers.length > 0"  class="search_list">
+						<div ng-repeat="ledger in debit_ledgers" class="search_list_item" ng-click="get_debit_ledger_details(ledger)" ng-class="{'highlight': $index == focusIndex}">
+							<span>[[ledger.name]] - [[ledger.parent_name]]</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="control">
+				<label>Credit Ledger</label><a href="" ng-click="create_ledger('credit_ledger')">New Ledger</a>
+				<input type="text" name="transaction_credit_ledger" ng-model="credit_ledger_name" ng-change="get_ledgers('credit_ledger')" autocomplete="off">
+				<div class="search_list_container">
+					<div ng-show="credit_ledgers.length > 0"  class="search_list">
+						<div ng-repeat="ledger in credit_ledgers" class="search_list_item" ng-click="get_credit_ledger_details(ledger)" ng-class="{'highlight': $index == focusIndex}">
+							<span>[[ledger.name]] - [[ledger.parent_name]]</span>
+						</div>
+					</div>
+				</div>
+			</div>	
+			<div class="control">
+				<label>Narration</label>
+				<textarea name="payment_narration" ng-model="transaction.narration"></textarea>
+			</div>
+		
+	</div>
+
+			<div class="button_control">
+				<p class="error_msg">[[validate_error_msg]]</p>
+				<p class="error_msg">[[no_debit_ledger_msg]]</p>
+				<p class="error_msg">[[no_credit_ledger_msg]]</p>
+				<input type="button" value="Save" class="create_button" ng-click="save_transaction()" />
+			</div>
+		</form>
+	</div>
+{% endblock content %}

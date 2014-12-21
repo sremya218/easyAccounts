@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block body_id %}accounts{% endblock %}
+{% block title %} Opening Balance {% endblock title%}
+{% block controller %} ng-controller="OpeningBalanceController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block dialogue_popup %}   
+    {% include 'show_transaction_details.html' %} 
+{% endblock %}
+{% block extrahead %}
+	<script>
+		$(function() {
+			$("#account_date").datepicker();
+		});
+	</script>
+{% endblock %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'chart_of_accounts' %}" > Chart Of Accounts </a></li>
+		<li><a href="{% url 'other_transactions' %}">Other Transactions</a></li>
+		<li><a href="{% url 'contra_transactions' %}">Contra Transactions</a></li>
+		<li><a href="{% url 'payments' %}" class="no-border">Payments</a></li>
+		<li class="horizontal_menu_active"><a href="{% url 'opening_balance' %}" >Opening Balance</a></li>
+		<li><a href="{% url 'edit_transactions' %}">Edit Transactions</a></li>
+		<li><a href="{% url 'receipts' %}">Receipts</a></li>
+		
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}    
+{% block content %}
+	<h2> Opening Balance </h2>
+	<div class="col-md-6 col-sm-6">
+	<div class="row">
+		<form class="opening_balance_form">
+			<div class="control">
+				<label>Account</label>
+				<input type="text" name="ledger_name" ng-model="opening_balance.ledger_name" ng-change="get_ledger_list()" ng-disabled="ledger.id" autocomplete="off" />
+				<div ng-show="ledgers_list.length > 0" class="search_list">
+					<div ng-repeat="ledger in ledgers_list" class="search_list_item" ng-click="get_ledger_details(ledger)" ng-class="{'highlight': $index == focusIndex}">
+						<span>[[ledger.name]] - [[ledger.parent_name]]</span>
+					</div>
+				</div>
+			</div>
+			<div class="control">
+				<label>Amount</label>
+				<input type="text" name="amount" ng-model="opening_balance.amount">
+			</div>
+			<div class="control">
+				<label>Date</label>
+				<input type="text" name="amount" id="account_date" >
+			</div>
+		</div>
+			<div class="button_control">
+				<p class="error_msg">[[validate_error_msg]]</p>
+				<p class="error_msg">[[no_ledger_msg]]</p>
+				<input type="button" ng-click="save_opening_balance()" value="Save" class="create_button" /> 
+			</div>
+		</form>
+	</div>
+{% endblock content%}

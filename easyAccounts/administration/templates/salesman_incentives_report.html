@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block body_id %}reports{% endblock %}
+{% block title %}Incentives Report{% endblock title%}
+{% block extrahead %}
+	<script>
+		$(function() {
+			$( "#start_date" ).datepicker();
+			$( "#end_date" ).datepicker();
+		});
+	</script>
+{% endblock %}
+{% block controller %} ng-controller="IncentivesReportController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'purchase_report' %}"> Purchase </a></li>
+		<li> <a href="{% url 'sales_report' %}"> Sales </a></li>
+		<li> <a href="{% url 'sales_return_report' %}"> Sales Return </a></li>
+		<li><a href="{% url 'day_book' %}"> Accounts </a></li>
+		<li><a href="{% url 'vendor_stock_report' %}"> Suppliers </a></li>
+		<li><a href="{% url 'received_report' %}" class="no-border"> Customers </a></li>
+		<li class="horizontal_menu_active"><a href="{% url 'salesman_incentive_report' %}"> Salesman </a></li>
+		<li><a href="{% url 'pdc_report' %}"> PDC Report </a></li>
+		<li ><a href="{% url 'stock_report' %}"> Inventory </a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+
+{% block content %}
+	<h2>Incentives</h2>
+	<div class="form_container single_column_container">
+		<div class="control">
+			<label>Salesman</label>
+			<input type="text" ng-model="salesman_name" ng-change="search_salesman()" /> 
+			<div ng-show="salesmen.length > 0" class="search_list">
+				<div ng-repeat="salesman in salesmen" class="search_list_item" ng-click="select_salesman(salesman)" ng-class="{'highlight': $index == focusIndex}">
+					<span>[[salesman.name]]</span>
+				</div>
+			</div>
+		</div> 
+		<div class="control">
+			<label>Start Date</label>
+			<input type="text" id="start_date" readonly />
+		</div>
+		<div class="control">
+			<label>End Date</label>
+			<input type="text" id="end_date" readonly />
+		</div>
+		<div class="button_control">
+			<p class="error_msg">[[no_salesman_message]]</p>
+			<p class="error_msg">[[error_msg]]</p>
+			<input type="button" ng-click="generate_report()" value="Get Report" />
+		</div>
+	</div>
+{% endblock content %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block body_id %}reports{% endblock %}
+{% block title %} Category Stock Aging Report {% endblock title%}
+{% block controller %} ng-controller="CategoryStockAgingReportController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li class=""> <a href="{% url 'purchase_report' %}"> Purchase </a></li>
+		<li> <a href="{% url 'sales_report' %}"> Sales </a></li>
+		<li> <a href="{% url 'sales_return_report' %}"> Sales Return </a></li>
+		<li><a href="{% url 'day_book' %}"> Accounts </a></li>
+		<li><a href="{% url 'vendor_stock_report' %}"> Suppliers </a></li>
+		<li><a href="{% url 'received_report' %}"> Customers </a></li>
+		<li><a href="{% url 'salesman_incentive_report' %}"> Salesman </a></li>
+		<li><a href="{% url 'pdc_report' %}" class="no-border"> PDC Report </a></li>
+		<li class="horizontal_menu_active"><a href="{% url 'stock_report' %}"> Inventory </a></li>
+	</ul>
+{% endblock horizontal_menu %}
+{% block sub_menu %}
+	<li> <a href="{% url 'stock_report' %}"> Stock Report </a></li>
+	<li><a href="{% url 'stock_aging_report' %}">Stock Aging Report</a></li>
+	<li><a href="{% url 'catergory_wise_stock_report' %}">Category Wise Stock Report</a></li>
+	<li class="horizontal_menu_active"><a href="{% url 'category_stock_aging_report' %}">Category Wise Stock Aging Report</a></li>
+	<li><a href="{% url 'category_purchase_report' %}">Category Wise Purchase Report</a></li>
+	<li><a href="{% url 'category_vendor_report' %}">Category Wise Vendor Report</a></li>
+{% endblock sub_menu%}
+{% block content %}
+	<h2>Category Wise Stock Report</h2>
+	<div class"report_form row">
+		<div class="col-md-6 col-sm-6">
+			<div class="control">
+				<label>Category</label>
+				<input type="text" name="category_name" ng-model="category_name" ng-change="get_category_list()" autocomplete="off" />
+				<div ng-show="categories.length > 0" class="search_list">
+					<div ng-repeat="category in categories" class="search_list_item" ng-class="{'highlight': $index == focusIndex}" ng-click="select_category_details(category)">
+						<span>[[category.name]] <span ng-show="category.parent_name!=''"> - </span> [[category.parent_name]]</span>
+					</div>
+				</div>
+				<p class="error_msg">[[no_batch_msg]]</p>
+			</div>
+		</div>
+		<div class="button_control">
+			<p class="error_msg">[[category_error]]</p>
+			<input type="button" class="create_button" value="View" ng-click="get_stock_details('view')" />
+		</div>
+		<div class="control">
+			<table ng-show="item_stock.length > 0" class="table list_table" >
+				<tr>
+					<th>Item</th>
+					<th ng-repeat="month in months" >[[month.name]]
+						<table class="table list_table">
+							<tr>
+								<td ng-repeat="field in month.fields">[[field]]</td>
+							</tr>
+						</table>
+					</th>
+				</tr>
+				<tr ng-repeat="item in visible_list">
+					<td>[[item.item_name]]</td>
+					<td ng-repeat="month in item.month_details">
+						<table class="table" cellpadding="0" cellspacing="0">
+							<tr>
+								<td ng-repeat="field in month.fields track by $index" style="border:none">[[field]]</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div ng-show="stock_details.length > 0 ">
+			{% include 'pagination_div.html' %}
+		</div>
+		
+	</div>
+{% endblock content %}

@@ -1,0 +1,24 @@
+<div id="add_category">
+	<form name="category_form">
+		<div class="control">
+			<label>Parent : </label>
+			<label ng-show="category.parent_name">[[category.parent_name]]</label>
+			<input type="text" ng-model="parent_name" ng-change="get_category_list()" ng-hide="category.parent_name"/>
+			<div>
+				<div ng-repeat="category in categories_list" ng-click="select_category(category)">
+					<span>[[category.name]]</span>
+				</div>
+			</div>
+			<p class="error_msg">[[no_categories_msg]]</p>
+		</div>
+		<div class="control">
+			<label>Name</label>
+			<input type="text" ng-model="category.name"/>
+		</div>
+		<div class="button_control">
+			<p class="error_msg">[[validate_category_error_msg]]</p><br/>
+			<input type="submit" value="Create" ng-click="save_category()">
+			<input type="submit" value="Cancel" ng-click="hide_popup()"><br/>
+		</div>
+	</form>
+</div>

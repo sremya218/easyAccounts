@@ -1,0 +1,39 @@
+<div class="form_container single_column_container" id="add_product">
+	<form name="category_form">
+		<div class="col-md-3 col-sm-3"></div>
+		<div class="col-md-6 col-sm-6">
+			<div class="control">
+				<div class="control" style="margin-left: 86px;">
+					<input type="radio" ng-click="search_category()" ng-model="category_option" value="Search Category">
+					<label>Search Category</label>
+					
+					<input type="radio"  ng-click="new_category()" ng-model="category_option"value="New Category">
+					<label>New Category</label>
+				</div>
+				<div class="control">
+					<label>Category</label>
+					<input type="text" name="category_name" ng-model="category_name" ng-change="get_category_list()" autocomplete="off" ng-hide="is_new_category" />
+					<input type="text" name="new_category_name" ng-model="product.new_category_name" ng-change="is_category_name_exists()" autocomplete="off" ng-show="is_new_category" />
+				</div>
+				<div ng-show="categories.length > 0" class="search_list">
+					<div ng-repeat="category in categories" class="search_list_item" ng-class="{'highlight': $index == focusIndex}" ng-click="select_category_details(category)">
+						<span>[[category.name]] <span ng-show="category.parent_name!=''"> - </span> [[category.parent_name]]</span>
+					</div>
+				</div>
+				<p></p>
+			</div>
+			<div class="control">
+				<label>Product Name</label>
+				<input type="text" ng-model="product.name"/>
+			</div>
+			<div class="button_control">
+				<p class="error_msg">[[validate_product_error_msg]]</p>
+				<p class="error_msg">[[no_categories_msg]]</p>
+				<input type="button" value="Create" ng-click="save_product()">
+				<input type="button" value="Cancel" ng-click="hide_popups()">
+			</div>
+	    </div>
+	    <div class="col-md-3 col-sm-3"><!-- Place holder --></div>
+        
+    </form>
+</div>

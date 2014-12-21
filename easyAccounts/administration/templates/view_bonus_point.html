@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}View Bonus Points {% endblock title%}
+{% block body_id %}view_bonus_points{% endblock %}
+{% block controller %} ng-controller="ViewBonusPointController" ng-init="init('{{ csrf_token }}')" 
+{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li class=""> <a href="{% url 'bonus_points' %}" >Bonus Points </a></li>
+		<li class=""> <a href="{% url 'create_bonus_point' %}" >Create new </a></li>
+		<li class=""> <a href="{% url 'set_bonus_point' %}" class="no-border">Set Bonus Point </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'view_bonus_point' %}">View Bonus Point </a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+	
+	<div class="row margin-top">
+		<div class="col-md-6 col-sm-6">
+		<h2>View Bonus Points</h2>
+		<div class="control">
+			<label>Bonus Type</label>
+			<select ng-model="bonus_type" ng-change="clear_bonus_point_details()">
+				<option value="">Select</option>
+				<option value="Customer">Customer</option>
+				<option value="Salesman">Salesman</option>
+			</select>
+		</div>
+		<div class="control">
+			<label>[[bonus_type]]</label>
+			<input type="text" ng-model="name" ng-change="search_person_list()"/>
+			<div ng-show="customers.length > 0 || salesmen.length > 0" class="search_list">
+				<div ng-repeat="customer in customers" ng-show="bonus_type == 'Customer' && customers.length > 0" ng-click="select_person(customer)" ng-class="{'highlight': $index == focusIndex}" class="search_list_item">
+					<span>[[customer.name]]</span>
+				</div>
+				<div ng-repeat="salesman in salesmen" ng-show="bonus_type == 'Salesman' && salesmen.length > 0" ng-click="select_person(salesman)" ng-class="{'highlight': $index == focusIndex}" class="search_list_item">
+					<span>[[salesman.name]]</span>
+				</div>
+			</div>
+			<p class="error_msg" ng-show="customers.length == 0 || salesmen.length == 0"> No such [[bonus_type]]</p> 
+		</div>
+		<div class="control">
+			<label>Bonus Point Amount :</label>
+			<label>[[bonus_point]]</label>
+		</div>
+		<div class="control">
+			<label>Clearing Amount</label>
+			<input type="text" ng-model="clearing_amount" />
+		</div>
+		<div class="button_control">
+			<p class="error_msg">[[clear_bonus_point_validation]]</p>
+			<input type="button" ng-click="clear_bonus_point()" value="Clear" />
+		</div>
+	</div>
+	</div>
+{% endblock %}

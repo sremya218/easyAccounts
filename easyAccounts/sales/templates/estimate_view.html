@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block body_id %}sales{% endblock %}
+{% block title %} Estimate View {% endblock title%}
+{% block controller %} ng-controller="EstimateViewController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'sales_entry' %}"> Sales </a></li>
+		<li> <a href="{% url 'sales_return_entry' %}"> Sales Return </a></li>
+		<li> <a href="{% url 'sales_return_view' %}"> Sales Return View</a></li>
+		<!-- <li><a href="{% url 'receipt_to_invoice' %}" class="no-border">Receipt To Invoice</a></li> -->
+		<li class="horizontal_menu_active"><a href="{% url 'estimate_entry' %}"class="no-border">Estimate</a></li>
+		<li><a href="{% url 'deliverynote_entry' %}">Delivery Note</a></li>
+	</ul>
+{% endblock %}
+{% block sub_menu%}
+	<li><a href="{% url 'estimate_entry' %}" class="no-border">Estimate</a></li>
+	<li class="horizontal_menu_active"><a href="{% url 'estimate_view' %}"class="no-border">Estimate View</a></li>
+{% endblock sub_menu%}
+{% block content %}
+	<h2> Estimate View </h2>
+	<div class="form_container wide_form">
+		<form name="sales_form">	
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Estimate No</label>
+					<input type="text" ng-model="estimate_no" ng-change="get_estimate_details()">
+				</div>	
+				<div class="control">
+					<label>DO No:</label>
+					<label>[[estimate.do_no]]</label>
+				</div>	
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Estimate Date:</label>
+					<label>[[estimate.estimate_invoice_date]]</label>
+					
+				</div>	
+				<div class="control">
+					<label>Salesman:</label>
+					<label>[[estimate.salesman]]</label>
+					
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Customer:</label>
+					<label>[[estimate.customer]]</label>
+					
+				</div>
+			</div>
+			<div class="col-md-12 col-sm-12">
+				<div class="payment_mode">
+					<label>Estimate type</label>
+					<div class="col-md-6 col-sm-4">
+					<div class="control">
+						<input type="radio" ng-model="estimate.bill_type" value="Tax Inclusive" disabled="true"><label>Taxable</label>
+						<input type="radio" ng-model="estimate.bill_type" value="Tax Exclusive" disabled="true"><label>Non Taxable</label>
+					</div> 
+				</div>
+			</div>
+				</div>
+			</div>
+			<!-- <div class="payment_mode">
+				<label>Payment Mode</label>
+				<div class="control">
+					<input type="radio" ng-model="estimate.payment_mode" value="cash"disabled="true"><label>Cash</label>
+					<input type="radio" ng-model="estimate.payment_mode" value="cheque" disabled="true"><label>Cheque</label>
+					<input type="radio" ng-model="estimate.payment_mode" value="card" disabled="true"><label>Card</label>
+					<input type="radio" ng-model="estimate.payment_mode" value="credit" disabled="true"><label>Credit</label>
+				</div> 
+			</div> -->
+			<br/>
+			<hr>
+			<table class="table list_table table-striped rules" ng-show="estimate.items.length > 0">
+				<tr>
+					<th>#</th>
+					<th> Item Name </th>
+					<th> Code </th>
+					<th> Batch </th>
+					
+					<th> UOM </th>
+					<th> Quantity </th>
+					
+					<th> MRP </th>
+					<th ng-show="estimate.bill_type == 'Tax Inclusive'"> Tax </th> 
+					<th> Net Amount </th>
+					
+				</tr>
+				<tr ng-repeat="item in estimate.items">
+					<td>[[$index+1]]</td>
+					<td>[[item.name]]</td>
+					
+					<td>[[item.code]]</td>
+					<td>[[item.batch_name]]</td>
+					
+					<td>[[item.stock_unit]]</td>
+					<td>[[item.quantity]]</td>
+					<td>[[item.mrp]]</td>
+					<td ng-show="estimate.bill_type == 'Tax Inclusive'">[[item.tax]]<span ng-show="item.tax_percentage > 0">%</span></td>
+					<td>[[item.net_amount]]</td>
+				</tr> 
+			</table>	
+			<hr>	
+			<div class="col-md-6 col-sm-6"	>	
+				<div class="control">
+					<label>Discount:</label>
+					<label>[[estimate.discount]]</label>
+				</div>
+				
+				<div class="control">
+					<label>Grant Total:</label>
+					<label>[[estimate.grant_total]]</label>
+				</div>
+			</div>
+			<div class="button_control">
+				<input class="" type="submit" value="Print" ng-click="print_estimate(estimate_id)">
+				<p class="error_msg">[[estimate_error_message]]</p>
+			</div>
+		</form>
+	</div>
+{% endblock %}

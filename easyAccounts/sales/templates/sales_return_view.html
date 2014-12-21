@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block body_id %}sales{% endblock %}
+{% block title %} Sales Return View {% endblock title%}
+{% block controller %} ng-controller="SalesReturnViewController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+
+{% block dialogue_popup %}
+	{% include 'bank_account_details.html' %} 
+	{% include 'show_payment_details.html' %}       
+{% endblock %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'sales_entry' %}"> Sales </a></li>
+		<li> <a href="{% url 'sales_return_entry' %}" class="no-border"> Sales Return </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'sales_return_view' %}"> Sales Return View</a></li>
+		<!-- <li><a href="{% url 'receipt_to_invoice' %}" >Receipt To Invoice</a></li> -->
+		<li><a href="{% url 'estimate_entry' %}">Estimate</a></li>
+		<li><a href="{% url 'deliverynote_entry' %}">Delivery Note</a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block content %}
+	<h2> View Sales Return</h2>
+	<div class="form_container wide_form">
+		<form name="sales_return_form">	
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Return Invoice No</label>
+					<input type="text" ng-model="ref_no" ng-change="get_sales_details()">
+				</div>	
+				<p class="error_msg">[[sales_error_message]]</p>
+				<div class="control">
+					<label>Transaction Reference No</label>
+					<label>[[sales_view.transaction_reference_no]]</label>
+				</div>	
+			</div>
+			<div class="col-md-6 col-sm-6">	
+				<div class="control">
+					<label>Invoice No</label>
+					<label>[[sales_view.invoice_no]]</label>
+				</div>	
+				<div class="control">
+					<label>Invoice Date</label>
+					<label>[[sales_view.invoice_date]]</label>
+				</div>	
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="control">
+					<label>Salesman</label>
+					<label>[[sales_view.salesman]]</label>
+				</div>
+				<div class="control">
+					<label>Customer</label>
+					<label>[[sales_view.customer]]</label>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="payment_mode">
+					<label>Bill type</label>
+					<div class="col-md-8 col-sm-4">
+					<div class="control">
+						<input type="radio" ng-model="sales_view.bill_type" value="Receipt" disabled="true" /><label>Receipt</label>
+						<input type="radio" ng-model="sales_view.bill_type" value="Invoice" disabled="true" /><label>Invoice</label>
+					</div>
+					</div> 
+				</div>
+			</div>
+			<div class="col-md-8 col-sm-8">
+				<div class="payment_mode">
+					<label>Payment Mode</label>
+					<div class="col-md-9 col-sm-4">
+					<div class="control">
+						<input type="radio" ng-model="sales_view.payment_mode" value="cash" disabled="true" /><label>Cash</label>
+						<input type="radio" ng-model="sales_view.payment_mode" value="cheque" disabled="true" /><label>Cheque</label>
+						<input type="radio" ng-model="sales_view.payment_mode" value="card" disabled="true" /><label>Card</label>
+						
+					</div> 
+				</div>
+				</div>
+			</div>
+			<br/>
+			<hr>
+			<button ng-click="show_payment_details()" ng-show="sales_view.payment_mode == 'cheque' || sales_view.payment_mode == 'card'">View Payment Details</button>
+			<table class="table list_table table-striped rules" ng-show="sales_view.items.length > 0">
+				<tr>
+					<th>#</th>
+					<th> Item Name </th>
+					<th> Code </th>
+					<th> Batch </th>
+					<th> Quantity </th>
+					<th> MRP </th>
+					<th ng-show="sales_view.bill_type == 'Invoice'"> Tax </th>
+					<th> Net Amount </th>
+				</tr>
+				<tr ng-repeat="item in sales_view.items">
+					<td>[[$index+1]]</td>
+					<td>[[item.name]]</td>
+					<td>[[item.code]]</td>
+					<td>[[item.batch]]</td>
+					<td>[[item.item_quantity]]</td>
+					<td>[[item.mrp]]</td>
+					<td ng-show="sales_view.bill_type == 'Invoice'">[[item.tax]]<span ng-show="item.tax > 0">%</span></td>
+					<td>[[item.net_amount]]</td>
+				</tr> 
+			</table>	
+			<hr>	
+			<div class="col-md-6 col-sm-6"	>
+			<div class="control">
+				<label>Discount</label>
+				<label>[[sales_view.discount]]</label>
+			</div>
+
+			<div class="control">
+				<label>Grant Total</label>
+				<label>[[sales_view.grant_total]]</label>
+			</div>
+		</div>
+		</form>
+	</div>
+{% endblock %}

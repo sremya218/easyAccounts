@@ -1,0 +1,12 @@
+
+<div class="stock_view_container" ng-controller="StockSearchController" ng-init="init('{{csrf_token}}')">
+	
+	<div class="col-md-7 col-sm-7 right no-padding">
+		<input name="header_search" class="header_search" ng-model="item_name"  autocomplete="off" ng-change="search_items()" />
+		<div class="search_list" ng-show="item_search && stock_items.length > 0">
+			<div ng-repeat="item_data in stock_items" ng-class="{'highlight': $index == focusIndex}"  ng-show="item_data.type=='Stockable'" ng-click="get_item_stock_list(item_data)">
+				<span>[[item_data.name]]</span>
+			</div>
+		</div>	
+	</div>		
+</div>

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block body_id %}add_category{% endblock %}
+{% block title %} {% if vat_id %} Edit Vat {% else %} Add Vat {% endif %} {% endblock title%}
+{% block controller %} ng-controller="AddMultipleVatController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'categories' %}"> Categories </a></li>
+		<li> <a href="{% url 'products' %}" class="no-border"> Products </a></li>
+		<li> <a href="{% url 'brands' %}"> Brands </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'vat' %}"> Vat Type </a></li>
+		<li> <a href="{% url 'items' %}"> Items </a></li>
+		<li> <a href="{% url 'batches' %}"> Batches </a></li>
+		<li> <a href="{% url 'opening_stock' %}"> Opening Stock </a></li>
+	</ul>
+{% endblock %}
+{% block sub_menu %}
+	<li class=""> <a href="{% url 'vat' %}"> List </a></li>
+	<li> <a href="{% url 'add_vat' %}"> {% if vat_id %} Edit Vat {% else %} Add Vat {% endif%} </a></li>
+	<li class="horizontal_menu_active"> <a href="{% url 'add_multiple_vat' %}"> Add Multiple Vats </a></li>
+{% endblock sub_menu%}
+{% block content %}
+
+		<form name="add_category_form">
+			<div class="col-md-8 col-sm-8 margin-top">
+				<table class="table table-striped">
+					<tr>
+						<th>#</th>
+						<th>Vat Type</th>
+						<th>Tax Percentage</th>
+						<th>Delete</th>
+					</tr>
+					<tr ng-repeat="vat in vat_list">
+						<td>[[$index+1]]</td>
+						<td><input type="text" name="vat_type" ng-model="vat.vat_type" /></td>
+						<td><input type="text" name="tax_percentage" ng-model="vat.tax_percentage" /></td>
+						<td><a href="" ng-click="remove_vat(vat)">X</a></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-8 col-sm-8">
+				<div class="button_control">
+					<input class="create_button" type="button" value="Bulk Vats" ng-click="add_bulk_vats('')" />
+					<input class="create_button" type="button" value="Single Vat" ng-click="add_bulk_vats('single')" />
+					<input class="create_button" type="button" value="Save" ng-click="save_vat()"/>
+					<p class="error_msg">[[validate_vat_error_msg]]</p>
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}

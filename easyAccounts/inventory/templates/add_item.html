@@ -1,0 +1,164 @@
+
+<div class="form_container row" id="add_item">
+		<div class="control">
+       <img src="/static/images/icon2.jpg" ng-click="hide_popup()" align="right" />
+  </div>
+</br>
+	<h3 align="center"> New Item </h3>
+</br>
+	<form name="item_form">
+		<div class="col-md-6 col-sm-6">
+			<div class="control">
+				<label>Item Name</label>
+				<input type="text" ng-model="item.name" id="item_name_data" />
+			</div>
+			<div class="control">
+				<label>Item Type</label>
+				<select name="item type" ng-model="item.type" >
+					<option value="">Select</option>
+					<option value="Stockable">Stockable</option>
+					<option value="Non Stockable">Non Stockable</option>
+					<option value="Services">Services</option>
+				</select>
+			</div>
+			<!--<div class="control" ng-show="item.type == 'Stockable'">
+				<label>Product</label>
+				<input type="text" ng-model="product_name" ng-change="get_products()" />
+				<a href="" ng-click="new_product()">New Product</a>
+				<div class="search_list" ng-show="products.length > 0" >
+					<div ng-repeat="product in products track by $index" class="search_list_item" ng-click="select_product_details(product)" ng-class="{'highlight': $index == focusIndex}">
+						<span>[[product.name]] - [[product.category_name]]</span>
+					</div>
+				</div>
+			</div>-->
+
+              <div class="control" ng-show="item.type == 'Stockable'">
+					<label>Product</label>
+					<input type="text" ng-model="product_name" ng-change="get_products()" ng-click="selected_product_flag=true;"/>
+					<div class="search_list" ng-show="selected_product_flag">
+						<!--<div class="search_list_item" ng-click="selected_product_flag=false" ng-show="selected_product_flag" ng-hide="!selected_product_flag">
+							<span><a href="" ng-click="new_product()">Create New</a></span>
+						</div>-->
+						<div ng-repeat="product in products track by $index" class="search_list_item" ng-class="{'highlight': $index == focusIndex}"ng-click="select_product_details(product)">
+							<span>[[product.name]] - [[product.category_name]]</span>
+						</div>
+					</div>
+				</div>
+
+
+			<!--<div class="control" ng-show="item.type == 'Stockable'">
+				<label>Brand</label>
+				<input type="text" ng-model="brand_name" ng-change="get_brands()"/>
+				<a href="" ng-click="new_brand()">New Brand</a>
+				<div ng-show="brands.length > 0" class="search_list">
+					<div ng-repeat="brand in brands" class="search_list_item" ng-click="select_brand_details(brand)" ng-class="{'highlight': $index == focusIndex}">
+						<span>[[brand.name]]</span>
+					</div>
+				</div>
+			</div>-->
+
+
+            <div class="control" ng-show="item.type == 'Stockable'">
+					<label>Brand</label>
+					<input type="text" ng-model="brand_name" ng-change="get_brands()" ng-click="select_brand_flag=true"/>
+					<div class="search_list" ng-show="select_brand_flag">
+						<!--<div class="search_list_item" ng-click="select_brand_flag=false" ng-show="select_brand_flag" ng-hide="!select_brand_flag">
+							<span><a href="" ng-click="new_brand()">New Brand</a></span>
+						</div>-->
+						<div ng-repeat="brand in brands" class="search_list_item" ng-class="{'highlight': $index == focusIndex}"ng-click="select_brand_details(brand)" >
+							<span>[[brand.name]]</span>
+						</div>
+					</div>
+				</div>
+
+
+			<!--<div class="control" ng-show="item.type == 'Stockable'">
+				<label>Vat Type</label>
+				<a href="" ng-click="new_vat()">New Vat</a>
+				<input type="text" ng-model="vat_type" ng-change="get_vat_list()"/>
+				<div ng-show="vat_list.length > 0" class="search_list">
+					<div ng-repeat="vat in vat_list" class="search_list_item" ng-click="select_vat_details(vat)" ng-class="{'highlight': $index == focusIndex}">
+						<span>[[vat.vat_name]]</span>
+					</div>
+				</div>
+			</div>-->
+
+			<!-- <div class="control" ng-show="item.type == 'Stockable'">
+					<label>Vat Type</label>
+					<input type="text" ng-model="vat_type" ng-change="get_vat_list()" ng-click="selected_vat_flag=true"/>
+					<div ng-show="selected_vat_flag" class="search_list">
+						<div class="search_list_item" ng-click="selected_vat_flag=false" ng-show="selected_vat_flag" ng-hide="!selected_vat_flag">
+							<span><a href="" ng-click="new_vat()">New VAT</a></span>
+						</div>
+						<div ng-repeat="vat in vat_list" class="search_list_item" ng-class="{'highlight': $index == focusIndex}" ng-click="select_vat_details(vat)">
+							<span>[[vat.vat_name]]</span>
+						</div>
+					</div>
+				</div> -->
+			<!-- <div class="control" ng-show="item.type == 'Stockable'">
+				<label>Cess</label>
+				<input type="text" ng-model="item.cess"/>
+			</div> -->
+			<!-- <div class="control" ng-show="item.type == 'Stockable'">
+				<label>Size</label>
+				<input type="text" ng-model="item.size"/>
+			</div> -->
+		</div>
+		<div class="col-md-6 col-sm-6">
+			<div class="control" ng-show="item.type == 'Stockable'">
+				<label>Barcode</label>
+				<input type="text" ng-model="item.barcode"/>
+			</div>
+			<div class="control">
+				<label>Description</label>
+				<textarea ng-model="item.description"></textarea>
+			</div>
+			<div class="control" ng-show="item.type == 'Stockable'">
+				<label>Room Number</label>
+				<input type="text" ng-model="item.room_number" />
+			</div>
+			<div class="control" ng-show="item.type == 'Stockable'">
+				<label>Shelf Number</label>
+				<input type="text" ng-model="item.shelf_number" />
+			</div>
+			<div ng-show="item.type == 'Stockable'" >
+				<div class="control" >
+					<label>UOM</label>
+		           <select ng-model="item.uom" ng-options="uom for uom in uoms"  ng-disabled="edit_item">
+
+						<option value=""> Select</option>
+					</select>						
+				</div>
+				<div class="follow_up_div" ng-show="item.uom == 'box'" ng-hide="edit_item">
+					<label>1 Box = </label>
+					<input type="text" ng-model="item.unit_per_box" />
+					<select ng-model="item.box_uom" ng-options="uom for uom in uoms | filter:'!box'" >
+						<option value=""> Select</option>
+					</select>						
+				</div>
+				<div class="follow_up_div" ng-show="item.uom == 'packet' || item.box_uom == 'packet'" ng-hide="edit_item">
+					<label>1 Packet = </label>
+					<input type="text" ng-model="item.unit_per_packet" />
+					<select ng-model="item.packet_uom" ng-options="uom for uom in uoms | filter:'!packet' |filter:'!box'" >
+						<option value=""> Select</option>
+					</select>						
+				</div>
+				<div class="follow_up_div" ng-show="item.uom == 'piece' || item.box_uom == 'piece' || item.packet_uom == 'piece'" ng-hide="edit_item">
+					<label>1 Piece = </label>
+					<input type="text" ng-model="item.unit_per_piece" />
+					<select ng-model="item.piece_uom" ng-options="uom for uom in uoms | filter:'!piece'| filter:'!packet' |filter:'!box'">
+						<option value=""> Select</option>
+					</select>						
+				</div>
+			</div>
+			<div class="control">
+				<p class="error_msg">[[no_product_msg]]</p>
+				<p class="error_msg">[[no_brand_msg]]</p>
+				<p class="error_msg">[[no_vat_msg]]</p>
+				<p class="error_msg">[[validate_item_error_msg]]</p>
+				<input type="button" value="Save" ng-click="save_item()" />
+				<input type="button" value="Cancel" ng-click="hide_popup()" />
+			</div>
+		</div>
+	</form>
+</div>

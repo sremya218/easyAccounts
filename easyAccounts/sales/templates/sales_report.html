@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block body_id %}reports{% endblock %}
+{% block title %} Sales Report {% endblock title%}
+{% block controller %} ng-controller="SalesReportController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+
+{% block extrahead %}
+	<script>
+		$(function() {
+			$('#start_date').datepicker();
+			$('#end_date').datepicker();
+		});
+	</script>
+{% endblock %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'purchase_report' %}" class="no-border"> Purchase </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'sales_report' %}"> Sales </a></li>
+		<li> <a href="{% url 'sales_return_report' %}"> Sales Return </a></li>
+		<li><a href="{% url 'day_book' %}"> Accounts </a></li>
+		<li><a href="{% url 'vendor_stock_report' %}"> Suppliers </a></li>
+		<li><a href="{% url 'received_report' %}"> Customers </a></li>
+		<li><a href="{% url 'salesman_incentive_report' %}"> Salesman </a></li>
+		<li><a href="{% url 'pdc_report' %}"> PDC Report </a></li>
+		<li ><a href="{% url 'stock_report' %}"> Inventory </a></li>
+	</ul>
+{% endblock %}
+{% block sub_menu %}
+	<li class="horizontal_menu_active"> <a href="{% url 'sales_report' %}"> Date Wise Report </a></li>
+	<li> <a href="{% url  'sales_report_customer_wise' %}"> Customer Wise Report  </a></li>
+	<li> <a href="{% url  'sales_report_area_customer_wise' %}"> Area Wise Sales Report  </a></li>
+	<li><a href="{% url 'sales_report_brand_wise' %}">Brand Wise Report</a></li>
+	<li><a href="{% url 'sales_report_category_wise' %}">Category Wise Report</a></li>
+	<li><a href="{% url 'sales_report_vendor_wise' %}">Vendor Wise Report</a></li>
+	<li><a href="{% url 'sales_report_item_wise' %}">Item Wise Report</a></li>
+	<li><a href="{% url 'sales_report_tax' %}">Tax Wise Report</a></li>
+{% endblock sub_menu%}
+{% block content %}
+	
+	<h2> Sales Report</h2>
+	<div class="col-md-6 col-sm-6">
+	<div class="report_form row">
+		<div class="col-md-6 col-sm-6">
+			<div class="control" >
+				<label>Start Date</label>
+				<input type="text" name="start_date" id="start_date">
+			</div>
+		</div>
+		<div class="col-md-6 col-sm-6">
+			<div class="control" >
+				<label>End Date</label>
+				<input type="text" name="end_date" id="end_date">
+			</div>
+		</div>
+	</div>
+	</div>
+	<br>
+	<table ng-show="sales_details.length > 0" class="table list_table">
+		<tr><!-- 
+			<th>Sl.No</th> -->
+			<th>Date</th>
+			<th>Invoice No</th>
+			<th>Transaction No.</th>
+			<th>Salesman</th>
+			<th>Customer</th>
+			<th>Payment Mode</th>
+			<th>Amount</th>
+			<th>Discount</th>
+			<th>Round off</th>
+			<th>Tax</th>
+		</tr>
+		<tr ng-repeat="sales in visible_list"><!-- 
+			<td>[[$index+1]]</td> -->
+			<td>[[sales.invoice_date]]</td>
+			<td>[[sales.invoice_no]]</td>
+			<td>[[sales.transaction_reference_no]]</td>
+			<td>[[sales.salesman]]</td>
+			<td>[[sales.customer]]</td>
+			<td>[[sales.payment_mode]]</td>
+			<td>[[sales.grant_total]]</td>
+			<td>[[sales.discount]]</td>
+			<td>[[sales.round_off]]</td>
+			<td>[[sales.sales_tax]]</td>
+		</tr>
+	</table>
+	<div ng-show="sales_details.length > 0">
+		{% include 'pagination_div.html' %}
+	</div>
+	<div class="col-md-12 col-sm-12">
+	<div class="button_control" >
+			<p class="error_msg">[[report_mesg]]</p>
+			<input type="submit" value="View" ng-click="generate_report('view')">
+			<input type="submit" value="Generate Report" ng-click="generate_report()">
+	</div>
+    </div>
+
+{% endblock content%}

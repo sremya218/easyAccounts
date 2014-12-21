@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block body_id %}inventory{% endblock %}
+{% block title %} Categories  {% endblock title%}
+{% block controller %} ng-controller="CategoryTreeController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block horizontal_menu %}
+	<ul>
+		<li class="horizontal_menu_active"> <a href="{% url 'categories' %}"> Categories </a></li>
+		<li> <a href="{% url 'products' %}"> Products </a></li>
+		<li> <a href="{% url 'brands' %}"> Brands </a></li>
+		<li> <a href="{% url 'items' %}"> Items </a></li>
+		<li> <a href="{% url 'batches' %}"> Batches </a></li>
+		<li> <a href="{% url 'opening_stock' %}"> Opening Stock </a></li>
+	</ul>
+{% endblock %}
+{% block submenu_container%}
+{% endblock submenu_container%}
+{% block extrahead %}
+ 	<script type="text/ng-template" id="category_renderer.html">		
+        <a href="" class="shrink closed" ng-click="toggle_category_view($event, category)" >
+        	<span>
+        		<i class="closed-icon fa fa-plus-circle"></i>
+				<i class="open-icon fa fa-minus-circle"></i>
+        		[[category.name]]
+        	</span>
+        </a>        
+        <a ng-click="add_subcategory(category)" class="new_button">
+        	<i class="fa fa-plus"></i>
+        </a>
+        <a ng-click="edit_subcategory(category)" class="edit_button"> 
+        	<i class="fa fa-edit"></i>
+        </a>
+        <ul>
+        	<li ng-repeat="category in category.subcategories" class="child" ng-include = "'category_renderer.html'" >
+        	 </li>
+    	</ul>
+	</script>
+ {% endblock %}
+
+{% block content %}
+	
+	<div class="tree_view col-md-4 col-sm-4">
+		<div class="tree_header white_bg">
+			<a href="" ng-click="add_subcategory()"class="create_new"><i class="fa fa-plus"></i> </a>
+		</div>
+		<div class="white_bg min-height">			
+		    <ul>
+		    	<li ng-repeat="category in categories" class="parent" ng-include="'category_renderer.html'"></li>
+		    </ul>
+		</div>
+	</div>		
+	<div class="col-md-8 col-sm-8 white_bg min-height">
+		<div class="tree_header white_bg no-border">
+		</div>
+		<div class="new_ledger min-height" ng-show="is_new_category">
+			
+			<div class="control">
+				<label>Name</label>
+				<input type="text" ng-model="category.name"/>
+			</div>
+			<div class="control">
+				<label>Parent : </label>
+				<input type="text" ng-model="category.parent_name" ng-show="category.parent_name" ng-readonly="category.parent_name"/>
+				<input type="text" ng-model="parent_name" ng-change="get_category_list()" ng-hide="category.parent_name"/>
+				<div class="search_list_container" ng-show="categories_list.length > 0">
+					<div class="search_list">
+						<div ng-repeat="category in categories_list" ng-click="select_category(category)" class="search_list_item" ng-class="{'highlight': $index == focusIndex}">
+							<span>[[category.name]]</span>
+						</div>
+					</div>
+				</div>
+				<p class="error_msg">[[no_categories_msg]]</p>
+			</div>
+			
+			<div class="button_control">
+				<p class="error_msg">[[validate_category_error_msg]]</p><br/>
+				<input type="submit" class="create_button" value="Save" ng-click="save_category()">
+			</div>
+		</div>
+	</div>
+
+	
+{% endblock %}

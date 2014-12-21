@@ -1,0 +1,868 @@
+
+@font-face {
+    font-family: 'open_sansregular';
+    src: url('../fonts/opensans-regular-webfont.eot');
+    src: url('../fonts/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/opensans-regular-webfont.woff2') format('woff2'),
+         url('../fonts/opensans-regular-webfont.woff') format('woff'),
+         url('../fonts/opensans-regular-webfont.ttf') format('truetype'),
+         url('../fonts/opensans-regular-webfont.svg#open_sansregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sansbold';
+    src: url('../fonts/opensans-bold-webfont.eot');
+    src: url('../fonts/opensans-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/opensans-bold-webfont.woff2') format('woff2'),
+         url('../fonts/opensans-bold-webfont.woff') format('woff'),
+         url('../fonts/opensans-bold-webfont.ttf') format('truetype'),
+         url('../fonts/opensans-bold-webfont.svg#open_sansbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Eurostile';
+    src: url('../fonts/Eurostile MN Extended.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'JosefinSans-SemiBold';
+    src: url('../fonts/JosefinSans-SemiBold.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/******************* Logo Font ********************/
+@font-face {
+  font-family: 'Alfa Slab One';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Alfa Slab One'), local('AlfaSlabOne-Regular'), url(../fonts/Qx6FPcitRwTC_k88tLPc-fn8qdNnd5eCmWXua5W-n7c.woff) format('woff');
+}
+.logo span{
+	font-family: 'Alfa Slab One', cursive;
+	font-size: 40px;
+}
+.logo p {
+	font-size: 10px;
+	/*margin-left: 42px;*/
+}
+.logo {
+	color: #0183A5;
+}
+/********** common styles *************/
+
+body {
+    font-family: 'open_sansregular';
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%
+}
+ul li ul {
+	display: block;
+    height: 0;
+    overflow: hidden;
+    list-style: none;
+}
+select {
+	border: 1px solid #C3C3C3;
+}
+option {
+	border-left: 1px solid #C3C3C3;
+	border-right: 1px solid #C3C3C3;
+	padding: 5px;
+}
+
+.container {
+    margin: auto;
+    width: 100%;
+}
+#dialogue_popup_container {
+	display: none;
+	position: fixed;
+	width: 100%;	
+}
+#dialogue_popup {
+	height: auto;
+	border: 4px solid #0183A5;
+	border-radius: 3px;
+	margin: 40px auto auto!important;
+	z-index: 3;
+	position: relative;
+	background-color: #FFFFFF;
+	display: none;
+	padding-bottom: 20px;
+	width: 80%;
+	padding: 1%;
+	max-height: 500px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding: 20px;
+}
+#dialogue_popup form {
+	width: auto;
+}
+#overlay {
+	display: none;
+	z-index: 3;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: #000000;
+	opacity: 0.5;
+}
+.spinner {
+		display: none;
+}
+#popup_overlay {
+	display: none;
+	z-index: 1;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: #000000;
+	opacity: 0.5;	
+}
+
+#dialogue_popup_container {
+	display: none;
+}
+.no-padding {
+	padding: 0px !important;
+}
+.no-margin {
+	margin: 0px;
+}
+.no-border {
+	border: none !important;
+}
+.white_bg {
+	background-color: #FFFFFF;
+}
+.right {
+	float: right;
+}
+.left {
+	float: left;
+}
+.clear {
+	clear: both;
+}
+.no-overflow {
+	overflow: hidden;
+}
+td input[type="text"]{
+	width: 100%;	
+}
+td select{
+	width: 100%;
+}
+label {
+	display: block;
+	float: left;
+	width: 20%;
+}
+input[type="text"]{
+	width: 80%;
+	border: 1px solid #C3C3C3;
+	padding: 10px;
+	display: block;
+	float: left;
+	background-color: #FFFFFF;
+}
+input[type="radio"]{
+	width: 25px;
+	display: block;
+	float: left;
+}
+input[type="button"], input[type="submit"]{
+	width: 15%;
+	margin-right: 20px;
+}
+table {
+	float: left;
+	margin-top: 15px;
+}
+textarea {
+	width: 80%;
+	height: 100px;
+	border: 1px solid #C3C3C3;
+	background-color: #FFFFFF;
+}
+select {
+	width: 80%;
+	display: block;
+	float: left;
+	background-color: #FFFFFF;
+}
+.margin-top {
+	margin-top: 30px !important; 
+}
+.search_list {
+    background-color: #FFFFFF;
+    border: 1px solid #31AFD5;
+    position: absolute;
+    right: 0;
+    top: 41px;
+    width: 80%;
+    z-index: 2;
+}
+td .search_list_container {
+	position: relative;
+	width: 100%;
+}
+td .search_list {
+	position: absolute;
+	width: 100%;
+}
+.search_list div {
+    padding: 5px;
+    border-bottom: 1px solid #31AFD5;
+}
+td {
+	height: 50px !important;
+}
+.error_msg {
+	color: red;
+}
+/********************* Common styles end *******************/
+
+
+/************************* Header Styles *************/
+.aqua_bg {
+	background-color: #3AD1C6;
+	height: 100%;
+	padding: 23px 0px;
+}
+
+.header_margin {
+	margin: 10px 0px 20px 0px;
+}
+
+header .container, header .row{
+	height: 100%
+}
+
+.logout {
+	width: 25px;
+	height: 25px;
+	font-size: 28px !important;
+}
+.settings {
+	width: 25px;
+	height: 25px;
+	font-size: 28px !important;
+}
+.help {
+	width: 25px;
+	height: 25px;
+	background: url('../images/top_help.svg') no-repeat;
+}
+.user {
+	width: 25px;
+	height: 25px;
+	font-size: 28px !important;
+}
+
+.header_search {
+	border: 1px solid #0195BB;
+	display: block;
+	float: right;
+	height: 27px;
+	width: 324px;
+/*	background: url('../images/top_search_icon.svg') no-repeat right;
+*/}
+header a:hover {
+	text-decoration: none;
+}
+.search_button {
+	color: #0195BB;
+    font-size: 21px !important;
+    position: absolute;
+    right: 3px;
+    top: 2px;
+}
+
+.header_icons, .date {
+	margin-bottom: 10px;
+	margin-top: 10px;
+	display: block;
+	float: right;
+}
+.date {
+	background-color: #0195BB;
+	color: #FFFFFF;
+	padding-left: 3px;
+	padding-right: 3px;
+	margin-top: 14px;
+}
+
+.header_icons a {
+	display: block;
+	float: left;
+	margin-left: 12px;
+}
+
+.home_icon {
+	color: #FFFFFF;
+    display: block !important;
+    font-size: 50px !important;
+    text-align: center;
+}
+
+header .search_list {
+    border: 1px solid #0195BB;
+    position: absolute;
+    right: 0;
+    top: 22px;
+    width: 324px;
+    z-index: 2;
+    background-color: #FFFFFF;
+}
+
+header .search_list div {
+    padding: 5px;
+    border-bottom: 1px solid #0195BB;
+}
+/************************** Header Styles end **********/
+
+
+/****************** sidemenu Styles ******************/
+
+.side_menu {
+	padding: 0px;
+	list-style: none;
+	width: 100%;
+	font-family: 'JosefinSans-SemiBold';
+}
+.side_menu li {
+	height: 70px;
+	color: #FFFFFF;
+	font-size: 15px;
+	text-align: center;	
+	padding-top: 10px;
+}
+
+.content {
+	background-color: #F0F0F0;
+	min-height: 645px;
+}
+
+.side_menu li:hover , .side_menu li.active:hover {
+	background-color: #26B0D7;
+	color: #000000;
+}
+
+.side_menu li a {
+    color: #FFFFFF;
+    display: block;
+    width: 100%;
+    background-repeat: no-repeat;
+	background-position: center 35%;
+	font-size: 15px;
+}
+
+.side_menu_icon {
+	font-size: 25px !important;
+	display: block !important; 
+}
+.side_menu li:hover a{
+	color: #000000;
+}
+
+.side_menu li:hover a:hover{
+	text-decoration: none;
+}
+.accounts_menu {
+	background-image: url('../images/sidebar_accounts.svg');
+	background-position: center 19px;
+	
+}
+.accounts_menu:hover, .accounts_menu.active, #accounts .accounts_menu {
+	background-image: url('../images/sidebar_accounts.svg');
+	background-color: #29A79D;
+	color: #000000;
+
+}
+
+.customers_menu {
+	background-image: url('../images/sidebar_customers.svg');
+	
+}
+.customers_menu:hover, .customers_menu.active, #customers .customers_menu {
+	background-image: url('../images/sidebar_customers.svg');
+	background-color: #29A79D;
+	color: #000000;
+}
+
+.suppliers_menu {
+	background-image: url('../images/sidebar_suppliers.svg');
+	
+}
+.suppliers_menu:hover, .suppliers_menu.active, #suppliers .suppliers_menu {
+	background-image: url('../images/sidebar_suppliers.svg');
+	background-color: #29A79D;
+	color: #000000;
+}
+
+.inventory_menu {
+	background-image: url('../images/sidebar_inventory.svg');
+	
+}
+.inventory_menu:hover, .inventory_menu.active, #inventory .inventory_menu {
+	background-image: url('../images/sidebar_inventory.svg');
+	background-color: #29A79D;
+	color: #000000;
+}
+
+.purchase_menu {
+	background-image: url('../images/sidebar_purchase.svg');
+}
+.purchase_menu:hover, .purchase_menu.active, #purchase .purchase_menu {
+	background-image: url('../images/sidebar_purchase.svg');
+	background-color: #29A79D;
+	color: #000000;
+}
+.sales_menu {
+	background-image: url('../images/sidebar_sales.svg');
+	
+}
+.sales_menu:hover, .sales_menu.active, #sales .sales_menu {
+	background-image: url('../images/sidebar_sales.svg');
+	background-color: #29A79D;
+	color: #000000;
+}
+.reports_menu {
+	background-image: url('../images/sidebar_reports.svg');
+	
+}
+.reports_menu:hover, .reports_menu.active, #reports .reports_menu {
+	background-image: url('../images/sidebar_reports.svg');
+	background-color: #29A79D;
+	color: #000000;
+}
+
+/************************ side menu styles end *****************/
+
+/*********************** Horizontal menu style start ********/
+.horizontal_menu_container {
+	background-color: #0195BB;
+	height: 50px;
+	font-family: 'JosefinSans-SemiBold';
+}
+.horizontal_menu {
+	float: left;
+    width: 94%;
+    height: 100%;
+    overflow-x: auto;
+}
+.horizontal_menu ul {
+	list-style: none;
+	height: 100%;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+.horizontal_menu ul li {
+	display: block;
+	float: left;
+	padding: 0px;
+	height: 100%;
+}
+
+.horizontal_menu ul li a{
+    border-right: 1px solid #B2B19D;
+    color: #FFFFFF;
+    display: block;
+    font-size: 15px;
+    margin-top: 5px;
+    padding: 10px 20px;
+    width: 100%;
+}
+
+.horizontal_menu ul li:hover, .horizontal_menu_active {
+	background-color: #26B0D7;
+}
+
+.horizontal_menu ul li:hover a, .horizontal_menu_active a {
+	color: #529263;
+}
+.horizontal_menu_active a {
+	border: none !important;
+}
+.horizontal_menu ul li:hover a:hover {
+	text-decoration: none;
+	color: #FFFFFF;
+}
+.no-border {
+	border-right: none !important;
+}
+.no-border:hover {
+	border-right: 1px solid #FFFFFF !important;
+}
+.left-arrow {
+	width: 20px;
+	height: 100%;
+	background: url('../images/lt-arrow.png') no-repeat;
+	display: block;
+	float: left;
+	background-position: 50%;
+}
+
+.right-arrow {
+	width: 20px;
+	height: 100%;
+	background: url('../images/rt-arrow.png') no-repeat;
+	display: block;
+	float: right;
+	background-position: 50%;
+}
+
+/******************************** Horizontal menu style end ****************/
+
+/************************** Content area style start *******************/
+.inner_content {
+    min-height: 94%;
+    padding-left: 30px;
+	padding-right: 30px;
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+.inner_content label {
+	font-weight: normal;
+}
+
+.create_button, input[type="button"], button, input[type="submit"] {
+	background-color: #31AFD5;
+	padding: 5px;
+	border: none;
+	float: right;
+	color: #FFFFFF;
+	min-width: 100px;
+}
+
+.content_search {
+	margin-top: 20px;
+}
+
+
+/********************* content ares atyle end **********/
+
+/******************** Submenu styles ***********/
+.sub_menu {
+	background-color: #26B0D7;
+	border-top: 1px solid #FFFFFF;
+	font-family: 'JosefinSans-SemiBold';
+}
+
+.sub_menu ul {
+	display: block;
+    float: left;
+    list-style: none outside none;
+    padding: 0;
+    margin-bottom: 0px;
+    height: 30px;
+    width: 2000px;
+    overflow: hidden;
+}
+
+.sub_menu ul li {
+	height: 30px;
+	display: block;
+	float: left;
+	padding: 5px;
+	border-right: 1px solid #FFFFFF;
+}
+.sub_menu ul li a {
+	padding: 0px 30px 0px 30px;
+	color: #FFFFFF;
+	text-decoration: none;
+	font-size: 15px;
+}
+.sub_menu .left_arrow {
+	width: 7%;
+	background: url('../images/lt-arrow.png') no-repeat center;
+	padding: 14px;
+
+}
+.sub_menu .right_arrow {
+	width: 7%;
+	float: right;
+	background: url('../images/rt-arrow.png') no-repeat center;
+	padding: 14px;
+
+}
+/******************** Submenu style send **********/
+/**************************** Footer style start *************/
+
+.footer {
+	background-color: #4C5E5D;
+	color: #FFFFFF;
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
+
+.powered_by {
+    text-align: right;
+    width: 80%;
+}
+
+/******************* footer style end ***************/
+
+/****************** Accounts page styles ************/
+.tree_header {
+	border-bottom: 3px solid #F0F0F0;
+    height: 50px;
+    width: 100%;
+    padding: 10px;
+}
+
+.create_new {
+	width: 30px;
+	height: 30px;
+	display: block;
+	float: left;
+	font-size: 30px;
+}
+
+.min-height {
+	min-height: 520px;
+}
+.tree_view {
+	padding-left: 0px;
+	overflow: auto;
+}
+.new_ledger {
+	overflow: auto;
+	padding: 20px;
+}
+.tree_view .white_bg {
+	height: 100%;
+	display: block;
+	float: left;
+	width: 100%;
+	padding-left: 20px;
+}
+.tree_view ul {
+	list-style: none outside none;
+	display: block;
+	float: left;
+	padding: 0px;
+	width: 100%;
+}
+.tree_view ul li {
+	display: block;
+	float: left;
+	width: 100%;
+}
+.tree_view ul li a {
+	font-size: 12px;
+	color: #000000;
+}
+.parent {
+	/*background: url('../images/tree_closed.svg') no-repeat left top;*/
+	padding: 0px 0px 0px 30px;
+	margin-top: 15px;
+}
+
+.child {
+	/*background: url('../images/tree_open.svg') no-repeat left top;*/
+	padding: 0px 0px 0px 30px;
+	margin-top: 15px;
+}
+.closed .closed-icon {
+	display: block;
+	float: left;
+	margin-right: 3px;
+	font-size: 18px;
+}
+.open .closed-icon {
+	display: none;
+}
+
+.closed .open-icon {
+	display: none;
+}
+.open .open-icon {
+	display: block;
+	float: left;
+	margin-right: 3px;
+	font-size: 18px;
+}
+.tree_view .new_button {
+	/*background: url('../images/icon7.jpg') no-repeat center center;*/
+	width: 14px;
+	height: 13px;
+	display: block;
+	float: left;
+	margin-left: 10px;
+}
+.tree_view .shrink {
+	display: block;
+	float: left;
+}
+.tree_view .edit_button {
+	/*background: url('../images/treeview_edit.svg') no-repeat center center;*/
+	width: 13px;
+	height: 13px;
+	display: block;
+	float: left;
+	margin-left: 10px;
+}
+
+/************************ Acconts styles end ****************/
+
+/************************** Purchase Styles ******************/
+.control {
+	float: left;
+	width: 100%;
+	margin-bottom: 20px;
+	position: relative;
+}
+input.small , select.small {
+	width: 40%;
+}
+select.small {
+	height: 38px;
+}
+.follow_up_div input, .follow_up_div select {
+	width: 40%;
+}
+.follow_up_div select { 
+	height: 52px;
+}
+
+.button_control {
+	margin-top: 20px;
+	float: left;
+	width: 100%;
+}
+
+.form_container {
+	display: block;
+	float: left;
+}
+
+/*********************** Purchase styles end ***************/
+
+
+/********************** Dashboard styles ******************/
+
+li a {
+	font-weight: bold;
+}
+.dashboard_content {
+	border: 1px solid #DDDDDD;
+	padding: 20px;
+	margin-top: 30px;
+}
+
+
+#line_container, #bar_container , #summary_container {
+	border: 1px solid #DDDDDD;
+	margin-bottom: 20px !important;
+}
+.highlight {
+	border: 2px solid #707070;
+}
+.dark_blue_bg {
+	background-color: #0183A5;
+	height: 100%;
+    padding: 31px 0;
+}
+/******************* Dashboard Styles end ************/
+
+
+/*Settings Style and header menus style */
+.header_menus {
+	margin-bottom: 10px;
+	margin-top: 10px;
+	display: block;
+	float: right;
+	height: 50%;
+	/*width: 40%;*/
+}
+.header_menus a {
+	display: block;
+}
+.header_menus li {
+	float: left;
+	display: block !important;
+	position: relative;	
+	padding: 2px 10px 2px 5px;
+}
+.header_menus li:hover > .drop_down {
+	display: block;
+	float: left;
+}
+.drop_down {
+	display: none;
+	list-style: none;
+	width: 130px;
+	position: absolute;
+	border: 1px solid #D3D3D3;
+	border-radius: 3px;
+	z-index: 1;
+	background-color: #FFFFFF;
+	margin: 0px 0 0 -60px;
+	height: auto !important;
+}
+.drop_down li {
+	display: block;
+	width: 130px;
+	position: relative;
+	margin: 0 0 0 -40px;
+	height: 30px;
+	padding: 5px;
+
+}
+.drop_down li a, .drop_down li a:hover {
+	display: block;
+	text-decoration: none;
+}
+#settings:hover > .drop_down {
+	display: block;
+	float: left;
+	/*margin: -118px 5px 0 0;*/
+}
+.drop_down li:hover {
+	color: #000000;
+	display: block;
+	/*height: 46px;*/
+}
+/*Settings Style*/
+
+
+.password_form {
+	margin-top: 100px;
+	margin-bottom: 50px;
+}
+.password_form input[type="password"] {
+	width: 50%;
+	border: 1px solid #D3D3D3;
+	height: 40px;
+	padding: 5px;
+}
+.password_form h3 {
+	text-align: center;
+	margin-bottom: 20px;
+	width: 80%;
+}
+
+.login {
+	margin-top: 200px;
+}
+
+.login input[type="password"] {
+	width: 80%;
+}

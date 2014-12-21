@@ -1,0 +1,48 @@
+<div  id="add_salesman_popup">
+	<div class="control">
+       <img src="/static/images/icon2.jpg" ng-click="hide_popup()" align="right" />
+     </div>
+	<form >
+		<div class="col-md-2 col-sm-2"></div>
+		<div class="col-md-8 col-sm-8">
+			<div class="control">
+				<div >
+					<label>First Name</label>
+					<input type="text" ng-model="salesman.first_name"/>
+				</div>
+			</div>
+			<div class="control">
+				<div >
+					<label>Last Name</label>
+					<input type="text" ng-model="salesman.last_name"/>
+				</div>
+			</div>
+			<div class="control">
+				<div >
+					<label>Address</label>
+					<input type="text" ng-model="salesman.address"/>
+				</div>
+			</div>
+			<div class="control">
+				<div >
+					<label>Contact Number</label>
+					<input type="text" ng-model="salesman.contact_no"/>
+				</div>
+			</div>
+			<div class="control">
+				<div >
+					<label>Email</label>
+					<input type="text" ng-model="salesman.email"/>
+				</div>
+			</div>
+			<div class="control">
+				<div >
+					<p >[[validate_salesman_error_msg]]</p><br/>
+					<input type="submit" value="Save" ng-click="save_salesman()">
+					<input type="submit" value="Cancel" ng-click="hide_popup()">
+				</div>
+			</div>
+	    </div>
+	    <div class="col-md-2 col-sm-2"></div>
+	</form>
+</div>

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block body_id %}inventory{% endblock %}
+{% block title %} Vat {% endblock title%}
+{% block controller %} ng-controller="VatController" ng-init="init('{{csrf_token}}')"{% endblock controller %}
+{% block dialogue_popup %}
+	{% include 'view_vat_details.html' %}                        
+{% endblock %}
+{% block horizontal_menu %}
+	<ul>
+		<li> <a href="{% url 'categories' %}"> Categories </a></li>
+		<li> <a href="{% url 'products' %}"> Products </a></li>
+		<li> <a href="{% url 'brands' %}" class="no-border"> Brands </a></li>
+		<li class="horizontal_menu_active"> <a href="{% url 'vat' %}"> Vat Type </a></li>
+		<li> <a href="{% url 'items' %}"> Items </a></li>
+		<li> <a href="{% url 'batches' %}"> Batches </a></li>
+		<li> <a href="{% url 'opening_stock' %}"> Opening Stock </a></li>
+	</ul>
+{% endblock %}
+{% block sub_menu %}
+	<li class="horizontal_menu_active"> <a href="{% url 'vat' %}"> List </a></li>
+	<li class=""> <a href="{% url 'add_vat' %}"> {% if vat_id %} Edit Vat {% else %} Add Vat {% endif%} </a></li>
+	<li> <a href="{% url 'add_multiple_vat' %}"> Add Multiple Vats </a></li>
+{% endblock sub_menu%}
+{% block content %}
+	<h2> VAT Types </h2>
+	<a class="create_button" href="{% url 'add_vat' %}" >Create Vat Type</a>
+	<div class="col-md-8 col-sm-8">
+	<div>
+		<label>Search Vat Type</label>
+		<input type="text" name="vat_type" ng-model="vat_type" ng-change="get_vat_list()" autocomplete="off">
+		<p class="error_msg">[[no_vat_msg]]</p>
+	</div>
+</div>
+	<table ng-show="vats.length > 0" class="table table-striped">
+		<tr>
+			<th>Vat Type</th>
+			<th>Tax Percentage</th>
+			<th> View</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+		<tr ng-repeat="vat in visible_list">
+			<td>[[vat.name]]</td>
+			<td>[[vat.percentage]]</td>
+			<td><a href="" ng-click="view_vat(vat)">View</a></td>
+			<td><a href="" ng-click="edit_vat(vat)">Edit</a></td>
+			<td><a href="" ng-click="delete_vat(vat)">Delete</a></td>
+		</tr>
+	</table>
+	<div ng-show="vats.length > 0">
+		{% include 'pagination_div.html' %}
+	</div>	
+
+{% endblock content %}

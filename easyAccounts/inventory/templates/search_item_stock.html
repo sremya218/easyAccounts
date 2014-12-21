@@ -1,0 +1,31 @@
+<div id="stock_search_list" ng-show="stock_items.stock_items.length > 0">
+	<table  class="table list_table table-striped rules">
+		<tr>
+			<th>#</th>
+			<th>Item Name</th>
+			<th>Code</th>
+			<th>Product</th>
+			<th>Brand</th>
+			<th>Category</th>
+			<th>Batch</th>
+			<th>Stock</th>
+			<th>Size</th>
+
+		</tr>
+		<tr ng-repeat="item in stock_items.stock_items" >
+			<td> [[($index)+1]] </td>
+			<td>[[item.item_name]]</td>
+			<td>[[item.code]]</td>
+			<td>[[item.product_name]]</td>
+			<td>[[item.brand_name]]</td>
+			<td>[[item.category]]</td>
+			<td>[[item.batch]]</td>
+			<td>[[item.stock]][[item.uom]]</td>
+			<td>[[item.size]]</td>
+		</tr>
+	</table>
+</div>	
+<div class="control">
+	<p class="error_msg" ng-show="stock_items.length == 0">No stock for this Item</p>	
+</div>	
+<input type="button" value="Cancel" ng-click="hide_popup()"><br/>

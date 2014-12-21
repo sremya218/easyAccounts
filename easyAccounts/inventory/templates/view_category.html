@@ -1,0 +1,16 @@
+<div id="view_category">
+	<div class="control">
+         <img src="/static/images/icon2.jpg" ng-click="hide_popup()" align="right" />
+    </div>
+	<div class="control">
+		<label>Name : </label>
+		<label>[[category.name]]</label>
+	</div>
+	<div class="control" ng-show="category.parent_name">
+		<label>Parent : </label>
+		<label>[[category.parent_name]]</label>
+	</div>
+	<div class="button_control">
+		<input class="create_button" type="submit" value="Cancel" ng-click="hide_popup()"><br/>
+	</div>
+</div>
