@@ -1322,12 +1322,12 @@ function OpeningStockController($scope, $http){
     $scope.get_batch = function(item){
         $http.get('/inventory/batch_item_details/?batch_id='+item.batch+'&item_id='+item.id).success(function(data){
             if (data.result == 'ok') {
-                item.stock = data.batch_item.quantity_in_purchase_unit;
-                if (data.batch_item.uom.length > 0)
+                item.stock = data.batch_item.stock;
+                if (data.batch_item.uoms.length > 0)
                     $scope.current_item_details.uom_exists = true;
                 else
                     $scope.current_item_details.uom_exists = false;
-                item.purchase_unit = data.batch_item.uom;
+                item.purchase_unit = data.batch_item.stock_unit;
                 item.purchase_price = data.batch_item.purchase_price;
             } else {
                 item.stock = 0;
@@ -1678,6 +1678,7 @@ function OpeningStockController($scope, $http){
         $scope.is_new_category = false;
     }
 }
+
 
 function CategoryTreeController($scope, $http){
     $scope.category = {

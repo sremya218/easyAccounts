@@ -928,6 +928,9 @@ class OpeningStockView(View):
                         'result': 'error',
                         'error_message': str(ex),
                     }
+                    response = simplejson.dumps(res)
+                    return HttpResponse(response, status=200, mimetype='application/json')
+
                 ledger_entry_cash_ledger = LedgerEntry()
                 ledger_entry_cash_ledger.ledger = cash_ledger
                 ledger_entry_cash_ledger.credit_amount = total_purchase_price
@@ -1008,7 +1011,8 @@ class SearchItemStock(View):
             for item in items:
                 batch_items = item.batchitem_set.all()
                 for batch_item in batch_items:
-                   item_dict.append({
+                    b_item = batch_item.get_json_data()
+                    item_dict.append({
                         'id': item.id,
                         'name': item.name,
                         'item_name': str(item.name),
@@ -1016,9 +1020,9 @@ class SearchItemStock(View):
                         'code': item.code,
                         'product_name': item.product.name,
                         'brand_name': item.brand.name,                  
-                        'stock': batch_item.quantity_in_actual_unit, 
+                        'stock': b_item["stock"],
                         'batch': batch_item.batch.name,
-                        'uom': batch_item.uom,
+                        'uom': b_item["stock_unit"],
                         'size': item.size
                     })  
             res = {
